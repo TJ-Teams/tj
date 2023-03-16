@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import paths from './paths';
 
-const MainPage = lazy(() => import('~/App'));
+const MainPage = lazy(() => import('./MainPage'));
 
 export default {
   main: {
