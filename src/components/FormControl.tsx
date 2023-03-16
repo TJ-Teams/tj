@@ -19,6 +19,7 @@ const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
     <ChakraFormControl ref={ref} isInvalid={Boolean(errorMessage)} {...props}>
       {label && (
         <FormLabel
+          zIndex={2}
           className="form-label"
           mb={1}
           noOfLines={1}

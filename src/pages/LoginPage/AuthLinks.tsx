@@ -8,6 +8,7 @@ const AuthLinks = () => (
       fontSize="24px"
       fontWeight="600"
       textTransform="uppercase"
+      borderRadius={4}
       href={paths.login.makePath()}
       children="Вход"
     />
@@ -15,6 +16,7 @@ const AuthLinks = () => (
       fontSize="24px"
       fontWeight="600"
       textTransform="uppercase"
+      borderRadius={4}
       href={paths.register.makePath()}
       children="Регистрация"
     />
