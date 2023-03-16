@@ -1,3 +1,11 @@
-import App from '~/App';
+import { lazy } from 'react';
+import paths from './paths';
 
-export default [{ path: '/', element: <App /> }];
+const MainPage = lazy(() => import('~/App'));
+
+export default {
+  main: {
+    path: paths.main.path,
+    Component: MainPage,
+  },
+};
