@@ -8,7 +8,7 @@ type Props = {
 };
 
 const PageLayout = ({ children }: Props) => (
-  <Flex as="main" minH="100vh" flexDir="column">
+  <Flex key="layout" as="main" minH="100vh" flexDir="column">
     <Header h="74px" />
     <Flex
       mt="74px"

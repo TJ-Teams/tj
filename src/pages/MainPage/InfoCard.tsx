@@ -13,7 +13,7 @@ const InfoCard = ({ imageSrc, text }: Props) => (
     borderRadius={30}
     boxShadow="0px 0px 20px rgba(0, 0, 0, 0.18)"
   >
-    <Image boxSize="116px" pointerEvents="none" src={imageSrc} />
+    <Image minW="116px" boxSize="116px" pointerEvents="none" src={imageSrc} />
     <Text
       fontSize="22px"
       fontWeight="600"

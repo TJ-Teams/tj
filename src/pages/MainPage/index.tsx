@@ -1,4 +1,4 @@
-import { HStack, Stack } from '@chakra-ui/react';
+import { HStack } from '@chakra-ui/react';
 import { Fragment } from 'react';
 import InfoCard from './InfoCard';
 import WelcomeImage from './WelcomeImage';

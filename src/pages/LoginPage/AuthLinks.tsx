@@ -1,0 +1,24 @@
+import { HStack } from '@chakra-ui/react';
+import Link from '~/components/Link';
+import paths from '~/pages/paths';
+
+const AuthLinks = () => (
+  <HStack spacing="36px">
+    <Link
+      fontSize="24px"
+      fontWeight="600"
+      textTransform="uppercase"
+      href={paths.login.makePath()}
+      children="Вход"
+    />
+    <Link
+      fontSize="24px"
+      fontWeight="600"
+      textTransform="uppercase"
+      href={paths.register.makePath()}
+      children="Регистрация"
+    />
+  </HStack>
+);
+
+export default AuthLinks;
