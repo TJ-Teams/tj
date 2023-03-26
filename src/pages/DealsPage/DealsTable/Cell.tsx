@@ -3,21 +3,22 @@ import dayjs from 'dayjs';
 import { TypeCell } from './types';
 
 type CellProps = {
+  isSecondary?: boolean;
   value: string | number | Date | undefined;
   type: TypeCell;
 };
 
-const Cell = ({ type, value }: CellProps) => {
+const Cell = ({ isSecondary, value, type }: CellProps) => {
   const TypedCell = getTypedCell(type);
 
   return (
     <TypedCell
       px={4}
+      minW="max-content"
       h="55px"
       maxH="55px"
       fontSize="14px"
-      borderRight="1px solid #B9B9B9"
-      borderBottom="1px solid #B9B9B9"
+      bg={isSecondary ? '#f7f7f7' : 'white'}
       value={value}
     />
   );
@@ -37,7 +38,7 @@ const getTypedCell = (type: TypeCell) => {
 const StringCell = ({
   value,
   ...props
-}: FlexProps & Omit<CellProps, 'type'>) => {
+}: FlexProps & Pick<CellProps, 'value'>) => {
   const normalizedValue = value?.toString() || '—';
 
   return (
@@ -50,7 +51,7 @@ const StringCell = ({
 const NumberCell = ({
   value,
   ...props
-}: FlexProps & Omit<CellProps, 'type'>) => {
+}: FlexProps & Pick<CellProps, 'value'>) => {
   const numberValue = parseFloat((value || '').toString());
   const normalizedValue = !isNaN(numberValue)
     ? numberValue.toLocaleString()
@@ -63,7 +64,10 @@ const NumberCell = ({
   );
 };
 
-const DateCell = ({ value, ...props }: FlexProps & Omit<CellProps, 'type'>) => {
+const DateCell = ({
+  value,
+  ...props
+}: FlexProps & Pick<CellProps, 'value'>) => {
   const dateValue = value ? dayjs(value) : undefined;
 
   const normalizedValue = dateValue?.isValid()

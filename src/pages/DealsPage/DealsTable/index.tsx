@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import Cell from './Cell';
 import HeaderCell from './HeaderCell';
 import { Column, Row } from './types';
@@ -17,75 +17,56 @@ const columns: Column[] = [
   { key: 'accuracy', name: 'Точность', type: 'number' },
 ];
 
-const rows: Row[] = [...Array(10)].flatMap(
-  () =>
-    [
-      {
-        name: 'INTC',
-        startDate: new Date(),
-        endDate: new Date(),
-        strategy: 'Восходящий клин',
-        mark: 'RSI',
-        sector: 'Технологии',
-        positionVolume: 200,
-        market: 'Акции',
-        income: 200,
-        factor: 4,
-        accuracy: 100,
-      },
-      {
-        name: 'BTC',
-        startDate: new Date().toISOString(),
-        endDate: new Date().toISOString(),
-        strategy: 'Молот',
-        positionVolume: 300,
-        market: 'Криптовалюта',
-        income: -200,
-        factor: -2,
-        accuracy: 50,
-      },
-    ] as Row[]
-);
+const rows: Row[] = [
+  {
+    name: 'INTC',
+    startDate: new Date(),
+    endDate: new Date(),
+    strategy: 'Восходящий клин',
+    mark: 'RSI',
+    sector: 'Технологии',
+    positionVolume: 200,
+    market: 'Акции',
+    income: 200,
+    factor: 4,
+    accuracy: 100,
+  },
+  {
+    name: 'BTC',
+    startDate: new Date().toISOString(),
+    endDate: new Date().toISOString(),
+    strategy: 'Молот',
+    positionVolume: 300,
+    market: 'Криптовалюта',
+    income: -200,
+    factor: -2,
+    accuracy: 50,
+  },
+];
 
-const DealsTable = () => {
-  return (
-    <Flex
-      w="fit-content"
-      h="fit-content"
-      m={4}
-      flexDir="column"
-      border="1px solid #B9B9B9"
-    >
-      <Flex flexDir="row">
-        {columns.map((column) => (
-          <Flex key={column.key} flexDir="column" w="max-content">
-            <HeaderCell name={column.name} />
-            {rows.map((row, i) => (
-              <Cell key={i} value={row[column.key]} type={column.type} />
-            ))}
-          </Flex>
-        ))}
-        <Text
-          pt={5}
-          pos="sticky"
-          top="74px"
-          right={0}
-          bg="pink"
-          css={{ writingMode: 'vertical-lr' }}
-          children=" + "
-        />
-      </Flex>
-      <Text
-        w="full"
-        pos="sticky"
-        bottom={0}
-        left={0}
-        bg="red"
-        textAlign="center"
-        children="Добавить сделку"
-      />
+const DealsTable = () => (
+  <Flex
+    flexDir="column"
+    overflow="auto"
+    border="1px solid #b9b9b9"
+    borderTop="none"
+  >
+    <Flex flex={1} flexDir="row">
+      {columns.map((column) => (
+        <Flex flexDir="column" _notLast={{ borderRight: '1px solid #b9b9b9' }}>
+          <HeaderCell name={column.name} />
+          {rows.map((row, j) => (
+            <Cell
+              key={j}
+              isSecondary={j % 2 === 1}
+              value={row[column.key]}
+              type={column.type}
+            />
+          ))}
+        </Flex>
+      ))}
     </Flex>
-  );
-};
+  </Flex>
+);
 
 export default DealsTable;

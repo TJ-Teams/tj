@@ -26,8 +26,20 @@ const variantPrimary = defineStyle({
   },
 });
 
+const variantClear = defineStyle({
+  color: 'black',
+  bg: 'transparent',
+  _hover: {
+    bg: 'transparent',
+  },
+  _active: {
+    bg: 'transparent',
+  },
+});
+
 const variants = {
   primary: variantPrimary,
+  clear: variantClear,
 };
 
 const sizes = {
