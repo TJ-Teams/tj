@@ -7,6 +7,10 @@ export default {
     path: '/register',
     makePath: () => '/register',
   },
+  deals: {
+    path: '/deals',
+    makePath: () => '/deals',
+  },
   main: {
     path: '/*',
     makePath: () => '/',
