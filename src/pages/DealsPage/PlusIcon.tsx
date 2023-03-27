@@ -9,7 +9,7 @@ export default (props: IconProps) => (
       y=".25"
       fill="#F3E4FF"
       stroke="#B9B9B9"
-      stroke-width=".5"
+      strokeWidth=".5"
       rx="3.75"
     />
     <rect width="3" height="13" x="8" y="3" fill="#852AD3" rx="1.5" />
