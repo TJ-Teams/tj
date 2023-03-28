@@ -8,12 +8,16 @@ import {
 } from '@chakra-ui/react';
 import { useRef } from 'react';
 import { useFieldFocus, useOutsideAction } from '~/hooks';
+import { useDealsContext } from '../deals-context';
 import { CellProps } from './Cell';
 
-type Props = FlexProps & Pick<CellProps, 'getValue' | 'onUpdate'>;
+type Props = FlexProps & Pick<CellProps, 'cellKey' | 'getValue' | 'onUpdate'>;
 
-const NumberCell = ({ getValue, onUpdate, ...props }: Props) => {
+const NumberCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
+  const { subscriptions } = useDealsContext();
   const [isEditor, setIsEditor] = useBoolean(false);
+
+  subscriptions.useSubscribe(`${cellKey}:focus`, setIsEditor.on);
 
   const boxRef = useRef<HTMLDivElement>(null);
   const inputRef = useFieldFocus<HTMLInputElement>({
@@ -52,6 +56,7 @@ const NumberCell = ({ getValue, onUpdate, ...props }: Props) => {
       ref={boxRef}
       cursor={isEditor ? 'text' : 'pointer'}
       onClick={handleEdit}
+      onKeyDown={(e) => e.key === 'Enter' && handleEdit()}
       justifyContent="flex-end"
       {...props}
     >
@@ -66,7 +71,7 @@ const NumberCell = ({ getValue, onUpdate, ...props }: Props) => {
             ref={inputRef}
             p={0}
             h="fit-content"
-            w={boxRef.current.getBoundingClientRect().width - 32}
+            w={boxRef.current.getBoundingClientRect().width - 33}
             bg="transparent"
             fontSize="inherit"
             textAlign="right"

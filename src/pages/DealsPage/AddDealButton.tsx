@@ -2,13 +2,27 @@ import { Flex, IconButton, Text } from '@chakra-ui/react';
 import { memo } from 'react';
 import { useDealsContext } from './deals-context';
 import PlusIcon from './PlusIcon';
+import { v4 as uuidV4 } from 'uuid';
 
 const AddDealButton = () => {
-  const { deals, subscriptions } = useDealsContext();
+  const { parameters, deals, subscriptions } = useDealsContext();
 
   const handleAdd = () => {
-    deals.set([...deals.get, {}]);
-    subscriptions.ping('table');
+    const needToCreate =
+      Object.values(deals.get.at(-1) || {}).filter(Boolean).length > 1;
+
+    const id = needToCreate ? uuidV4() : deals.get.at(-1)?.id || '';
+
+    if (needToCreate) {
+      deals.set([...deals.get, { id }]);
+      subscriptions.ping('table');
+    }
+
+    const firstParameter = parameters.get[0]?.key;
+
+    if (firstParameter) {
+      subscriptions.ping(`id=${id};p=${firstParameter}:focus`, 50);
+    }
   };
 
   return (
@@ -26,7 +40,7 @@ const AddDealButton = () => {
         mx={2}
         my={4}
         boxSize={4}
-        borderRadius="full"
+        borderRadius={2}
         variant="clear"
         aria-label="добавить сделку"
         icon={<PlusIcon />}

@@ -16,7 +16,7 @@ const AddParameterButton = () => (
       mx={4}
       my={2}
       boxSize={4}
-      borderRadius="full"
+      borderRadius={2}
       variant="clear"
       aria-label="добавить сделку"
       icon={<PlusIcon />}

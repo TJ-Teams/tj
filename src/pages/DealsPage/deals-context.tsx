@@ -1,11 +1,12 @@
 import { createContext, ReactNode, useContext, useEffect } from 'react';
-import { useLoadingState, useMethodAfterMount } from '~/hooks';
+import { v4 as uuidV4 } from 'uuid';
+import { useLoadingState } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import { Deal, Parameter } from './types';
 
-type SubscribeKey = 'table';
+type SubscribeKey = 'table' | `id=${string};p=${string}:${string}`;
 
 type DealsContent = {
   subscriptions: UseSubscriptions<SubscribeKey>;
@@ -18,7 +19,7 @@ type DealsProviderProps = {
 };
 
 const DealsContext = createContext<DealsContent>({
-  subscriptions: { subscribe: () => () => {}, ping: () => {} },
+  subscriptions: { useSubscribe: () => {}, ping: () => {} },
   deals: { get: [], set: () => {} },
   parameters: { get: [], set: () => {} },
 });
@@ -55,6 +56,7 @@ export const DealsProvider = ({ children }: DealsProviderProps) => {
 const dealsKey = 'deals-page:deals';
 const defaultDeals: Deal[] = [
   {
+    id: uuidV4(),
     name: 'INTC',
     startDate: new Date(),
     endDate: new Date(),
@@ -68,6 +70,7 @@ const defaultDeals: Deal[] = [
     accuracy: 100,
   },
   {
+    id: uuidV4(),
     name: 'BTC',
     startDate: new Date().toISOString(),
     endDate: new Date().toISOString(),

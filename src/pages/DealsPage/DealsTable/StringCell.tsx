@@ -1,12 +1,17 @@
 import { Center, FlexProps, Input, Text, useBoolean } from '@chakra-ui/react';
 import { useRef } from 'react';
 import { useFieldFocus, useOutsideAction } from '~/hooks';
+import { useDealsContext } from '../deals-context';
 import { CellProps } from './Cell';
 
-type Props = FlexProps & Pick<CellProps, 'getValue' | 'onUpdate'>;
+type Props = FlexProps & Pick<CellProps, 'cellKey' | 'getValue' | 'onUpdate'>;
 
-const StringCell = ({ getValue, onUpdate, ...props }: Props) => {
+const StringCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
+  const { subscriptions } = useDealsContext();
+
   const [isEditor, setIsEditor] = useBoolean(false);
+
+  subscriptions.useSubscribe(`${cellKey}:focus`, setIsEditor.on);
 
   const boxRef = useRef<HTMLDivElement>(null);
   const inputRef = useFieldFocus<HTMLInputElement>({
@@ -42,6 +47,7 @@ const StringCell = ({ getValue, onUpdate, ...props }: Props) => {
       ref={boxRef}
       cursor={isEditor ? 'text' : 'pointer'}
       onClick={handleEdit}
+      onKeyDown={(e) => e.key === 'Enter' && handleEdit()}
       {...props}
     >
       {isEditor && boxRef.current ? (
@@ -49,7 +55,7 @@ const StringCell = ({ getValue, onUpdate, ...props }: Props) => {
           ref={inputRef}
           p={0}
           h="fit-content"
-          w={boxRef.current.getBoundingClientRect().width - 32}
+          w={boxRef.current.getBoundingClientRect().width - 33}
           variant="unstyled"
           bg="transparent"
           fontSize="inherit"

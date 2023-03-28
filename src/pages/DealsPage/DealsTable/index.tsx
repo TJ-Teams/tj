@@ -1,5 +1,4 @@
-import { Flex } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { ChakraProps, Flex, Grid } from '@chakra-ui/react';
 import { useForceUpdate } from '~/hooks';
 import { useDealsContext } from '../deals-context';
 import { Deal } from '../types';
@@ -10,9 +9,7 @@ const DealsTable = () => {
   const forceUpdate = useForceUpdate();
   const { deals, parameters, subscriptions } = useDealsContext();
 
-  useEffect(() => {
-    return subscriptions.subscribe('table', forceUpdate);
-  }, []);
+  subscriptions.useSubscribe('table', forceUpdate);
 
   const getCellValue = (index: number, key: string) => {
     return () => deals.get[index][key];
@@ -33,29 +30,59 @@ const DealsTable = () => {
       overflow="auto"
       border="1px solid #b9b9b9"
       borderTop="none"
+      css={scrollBarStyle}
+      scrollBehavior="smooth"
     >
-      <Flex flex={1} flexDir="row">
-        {parameters.get.map((p) => (
-          <Flex
-            key={p.key}
-            flexDir="column"
-            _notLast={{ borderRight: '1px solid #b9b9b9' }}
-          >
-            <HeaderCell name={p.name} />
-            {deals.get.map((_, j) => (
-              <Cell
-                key={j}
-                isSecondary={j % 2 === 1}
-                type={p.type}
-                getValue={getCellValue(j, p.key)}
-                onUpdate={updateCell(j, p.key)}
-              />
-            ))}
-          </Flex>
+      <Grid
+        flex={1}
+        gridAutoRows="55px"
+        gridTemplateColumns={`repeat(${parameters.get.length}, max-content)`}
+      >
+        {parameters.get.map((p, i) => (
+          <HeaderCell
+            key={`header-${p.key}`}
+            name={p.name}
+            borderLeft={i !== 0 ? '1px solid #b9b9b9' : 'none'}
+          />
         ))}
-      </Flex>
+        {deals.get.map((d, i) =>
+          parameters.get.map((p, j) => (
+            <Cell
+              key={`row-${d.id}-${p.key}`}
+              cellKey={`id=${d.id};p=${p.key}`}
+              isSecondary={i % 2 === 1}
+              borderLeft={j !== 0 ? '1px solid #b9b9b9' : 'none'}
+              type={p.type}
+              getValue={getCellValue(i, p.key)}
+              onUpdate={updateCell(i, p.key)}
+            />
+          ))
+        )}
+      </Grid>
     </Flex>
   );
+};
+
+const scrollBarStyle: ChakraProps['css'] = {
+  '&::-webkit-scrollbar': {
+    width: '10px',
+    height: '10px',
+  },
+  '&::-webkit-scrollbar:vertical': {
+    borderLeft: '1px solid #b9b9b9',
+  },
+  '&::-webkit-scrollbar:horizontal': {
+    borderTop: '1px solid #b9b9b9',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: '#f3e4ff',
+  },
+  '&::-webkit-scrollbar-thumb:vertical': {
+    borderLeft: '1px solid #b9b9b9',
+  },
+  '&::-webkit-scrollbar-thumb:horizontal': {
+    borderTop: '1px solid #b9b9b9',
+  },
 };
 
 export default DealsTable;

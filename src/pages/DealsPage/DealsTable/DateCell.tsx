@@ -1,28 +1,35 @@
 import {
   Box,
   Center,
+  ChakraProps,
   FlexProps,
   Input,
   Text,
   useBoolean,
 } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useOutsideAction } from '~/hooks';
+import { useDealsContext } from '../deals-context';
 import { CellProps } from './Cell';
 
-type Props = FlexProps & Pick<CellProps, 'getValue' | 'onUpdate'>;
+type Props = FlexProps & Pick<CellProps, 'cellKey' | 'getValue' | 'onUpdate'>;
 
-const DateCell = ({ getValue, onUpdate, ...props }: Props) => {
-  const boxRef = useRef<HTMLDivElement>(null);
+const DateCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
+  const { subscriptions } = useDealsContext();
   const [isEditor, setIsEditor] = useBoolean(false);
+
+  subscriptions.useSubscribe(`${cellKey}:focus`, setIsEditor.on);
+
+  const boxRef = useRef<HTMLDivElement>(null);
 
   useOutsideAction({
     boxRef,
     isActive: isEditor,
     callBackOnExit: setIsEditor.off,
+    triggerKeys: ['Enter'],
   });
 
   const value = getValue();
@@ -36,12 +43,13 @@ const DateCell = ({ getValue, onUpdate, ...props }: Props) => {
       ref={boxRef}
       cursor={isEditor ? 'text' : 'pointer'}
       onClick={setIsEditor.on}
+      onKeyDown={(e) => e.key === 'Enter' && setIsEditor.on()}
       {...props}
     >
       {isEditor && boxRef.current ? (
         <DateInput
           defaultDate={dateValue?.toDate()}
-          width={boxRef.current.getBoundingClientRect().width - 32}
+          width={boxRef.current.getBoundingClientRect().width - 33}
           onSave={onUpdate}
         />
       ) : (
@@ -60,44 +68,30 @@ type DateInputProps = {
 const DateInput = ({ width, defaultDate, onSave }: DateInputProps) => {
   const [date, setData] = useState(defaultDate);
 
+  useEffect(() => {
+    document.querySelector<HTMLInputElement>('.calendar-input')?.select();
+  }, []);
+
+  useEffect(() => {
+    onSave?.(date);
+  }, [date?.toISOString()]);
+
   return (
-    <Box
-      sx={{
-        '.react-datepicker__navigation--previous': { outline: 'none' },
-        '.react-datepicker__navigation-icon--previous::before': {
-          top: '10px',
-        },
-        '.react-datepicker__navigation--next': { outline: 'none' },
-        '.react-datepicker__navigation-icon--next::before': {
-          top: '10px',
-        },
-        '.react-datepicker__header': { bg: '#f3e4ff' },
-        '.react-datepicker__today-button': { bg: '#f3e4ff' },
-        '.react-datepicker__day--selected': {
-          bg: '#f3e4ff',
-          color: 'black',
-          outline: 'none',
-        },
-        '.react-datepicker__day--keyboard-selected': {
-          bg: 'transparent',
-          outline: 'none',
-          boxShadow: 'outline',
-        },
-        '.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::after':
-          { borderBottomColor: '#f3e4ff' },
-      }}
-    >
+    <Box sx={datePickerStyle}>
       <DatePicker
         startOpen
-        shouldCloseOnSelect={false}
+        preventOpenOnFocus
         todayButton="Сегодня"
         dateFormat="dd.MM.yyyy"
         selected={date}
         onSelect={setData}
-        onChange={(date) => onSave?.(date || undefined)}
+        onChange={(date) => setData?.(date || undefined)}
+        disabledKeyboardNavigation
         customInput={
           <Input
             p={0}
+            className="calendar-input"
+            ref={console.log}
             h="fit-content"
             w={width}
             variant="unstyled"
@@ -110,6 +104,31 @@ const DateInput = ({ width, defaultDate, onSave }: DateInputProps) => {
       />
     </Box>
   );
+};
+
+const datePickerStyle: ChakraProps['sx'] = {
+  '.react-datepicker__navigation--previous': { outline: 'none' },
+  '.react-datepicker__navigation-icon--previous::before': {
+    top: '10px',
+  },
+  '.react-datepicker__navigation--next': { outline: 'none' },
+  '.react-datepicker__navigation-icon--next::before': {
+    top: '10px',
+  },
+  '.react-datepicker__header': { bg: '#f3e4ff' },
+  '.react-datepicker__today-button': { bg: '#f3e4ff' },
+  '.react-datepicker__day--selected': {
+    bg: '#f3e4ff',
+    color: 'black',
+    outline: 'none',
+  },
+  '.react-datepicker__day--keyboard-selected': {
+    bg: 'transparent',
+    outline: 'none',
+    boxShadow: 'outline',
+  },
+  '.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::after':
+    { borderBottomColor: '#f3e4ff' },
 };
 
 export default DateCell;
