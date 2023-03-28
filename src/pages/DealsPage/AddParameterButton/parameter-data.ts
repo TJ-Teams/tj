@@ -1,6 +1,13 @@
 import * as yup from 'yup';
+import { RequiredStringSchema } from 'yup/lib/string';
+import { AnyObject } from 'yup/lib/types';
 import Form from '~/components/Form';
 import { Parameter, TypeParameter } from '../types';
+
+type TypeParameterSchema = RequiredStringSchema<
+  TypeParameter | undefined,
+  AnyObject
+>;
 
 export const createParameterFormSchema = (existingParameters: Parameter[]) =>
   yup
@@ -20,7 +27,10 @@ export const createParameterFormSchema = (existingParameters: Parameter[]) =>
         .trim()
         .required(Form.labels.required)
         .max(40, Form.labels.maxLength(40)),
-      type: yup.mixed<TypeParameter>().required(Form.labels.required),
+      type: yup
+        .string()
+        .oneOf(['string', 'number', 'date'])
+        .required(Form.labels.required) as TypeParameterSchema,
     })
     .required();
 

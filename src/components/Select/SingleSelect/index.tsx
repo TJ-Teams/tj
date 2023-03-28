@@ -184,6 +184,7 @@ const SingleSelect = <T,>(
             onClick: setIsOpen.on,
           })}
           {...(!allowInput && {
+            isReadOnly: true,
             value: chosenOption?.label || '',
             css: { caretColor: 'transparent' },
             _selection: { bg: 'transparent' },

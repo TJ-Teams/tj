@@ -1,13 +1,18 @@
 import {
   Input as ChakraInput,
+  InputElementProps,
+  InputGroup,
   InputProps as ChakraInputProps,
+  InputRightElement,
 } from '@chakra-ui/react';
-import { ChangeEvent, forwardRef, useEffect, useState } from 'react';
+import { ChangeEvent, forwardRef, ReactNode, useEffect, useState } from 'react';
 import FormControl, { FormControlProps } from './FormControl';
 
 export type InputProps = {
   label: string;
   onValueChange?: (value: string) => void;
+  rightElement?: ReactNode;
+  rightElementProps?: InputElementProps;
   formControlProps?: FormControlProps;
   errorMessage?: string;
   hasExternalValue?: boolean;
@@ -20,7 +25,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       onValueChange,
       onChange,
       formControlProps,
+      rightElement,
+      rightElementProps,
       errorMessage,
+      isReadOnly,
       hasExternalValue,
       ...props
     },
@@ -35,7 +43,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     }, [props.value]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+      if (isReadOnly) return;
       const value = event.currentTarget.value;
+      console.log(value);
       setHasValue(value.length > 0);
       onValueChange?.(value);
       onChange?.(event);
@@ -56,14 +66,19 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         _focusWithin={{ '.form-label': { top: 2, fontSize: '14px' } }}
         {...formControlProps}
       >
-        <ChakraInput
-          pt={4}
-          ref={ref}
-          autoComplete="off"
-          required={false}
-          onChange={handleChange}
-          {...props}
-        />
+        <InputGroup>
+          <ChakraInput
+            pt={4}
+            ref={ref}
+            autoComplete="off"
+            required={false}
+            onChange={handleChange}
+            {...props}
+          />
+          {rightElement && (
+            <InputRightElement {...rightElementProps} children={rightElement} />
+          )}
+        </InputGroup>
       </FormControl>
     );
   }

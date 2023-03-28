@@ -1,6 +1,7 @@
-import { useMergeRefs } from '@chakra-ui/react';
+import { IconButton, Spinner, useMergeRefs } from '@chakra-ui/react';
 import { forwardRef, useRef } from 'react';
 import Input, { InputProps } from '~/components/Input';
+import { CrossIcon, MiniArrowUpIcon } from '~/icons';
 
 type Props = {
   allowInput?: boolean;
@@ -30,30 +31,30 @@ const SelectInput = forwardRef<HTMLInputElement, Props>(
         {...inputProps}
         ref={refs}
         cursor={allowInput ? 'text' : 'pointer'}
-        // rightElementProps={{ pointerEvents: isShowClear ? undefined : 'none' }}
-        // rightElement={
-        //   isLoading ? (
-        //     <Spinner boxSize={4} color="primary.3" />
-        //   ) : isShowClear ? (
-        //     <IconButton
-        //       size="free"
-        //       variant="empty"
-        //       boxSize={4}
-        //       color="primary.3"
-        //       _hover={{ color: 'primary.4' }}
-        //       icon={<CrossIcon boxSize={3} />}
-        //       onClick={onClear}
-        //       aria-label="Очистить"
-        //     />
-        //   ) : (
-        //     <MiniArrowUpIcon
-        //       boxSize={3}
-        //       color="primary.4"
-        //       transition="ease-in-out 0.3s"
-        //       transform={`rotate(${isDropdownOpen ? 0 : 180}deg)`}
-        //     />
-        //   )
-        // }
+        rightElementProps={{ pointerEvents: isShowClear ? undefined : 'none' }}
+        rightElement={
+          isLoading ? (
+            <Spinner boxSize={4} color="rgba(109, 156, 251, 0.9)" />
+          ) : isShowClear ? (
+            <IconButton
+              size="free"
+              variant="empty"
+              boxSize={4}
+              color="rgba(109, 156, 251, 0.9)"
+              _hover={{ color: 'rgba(109, 156, 251, 0.6)' }}
+              icon={<CrossIcon boxSize={3} />}
+              onClick={onClear}
+              aria-label="Очистить"
+            />
+          ) : (
+            <MiniArrowUpIcon
+              boxSize={3}
+              color="rgba(109, 156, 251, 0.9)"
+              transition="ease-in-out 0.3s"
+              transform={`rotate(${isDropdownOpen ? 0 : 180}deg)`}
+            />
+          )
+        }
       />
     );
   }
