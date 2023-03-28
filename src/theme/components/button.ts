@@ -14,15 +14,31 @@ const baseStyle = defineStyle({
 
 const variantPrimary = defineStyle({
   color: '#F5F5F5',
-  bg: '#0044CB',
+  bg: 'primary.3',
   _hover: {
-    bg: '#366FE0',
+    bg: 'primary.1',
   },
   _active: {
-    bg: '#245ED2',
+    bg: 'primary.2',
   },
   _disabled: {
     opacity: 0.6,
+  },
+});
+
+const variantOutline = defineStyle({
+  color: 'neutral.6',
+  border: '1px solid',
+  borderColor: 'neutral.3',
+  _hover: {
+    bg: 'transparent',
+    borderColor: 'primary.3',
+    _disabled: {
+      borderColor: 'neutral.3',
+    },
+  },
+  _active: {
+    bg: 'transparent',
   },
 });
 
@@ -39,6 +55,7 @@ const variantClear = defineStyle({
 
 const variants = {
   primary: variantPrimary,
+  outline: variantOutline,
   clear: variantClear,
 };
 
@@ -47,6 +64,14 @@ const sizes = {
     p: 0,
     w: 'fit-content',
     h: 'fit-content',
+  }),
+  normal: defineStyle({
+    px: '50px',
+    py: 4,
+    lineHeight: '16px',
+    fontSize: '14px',
+    fontWeight: 'medium',
+    borderRadius: 10,
   }),
 };
 

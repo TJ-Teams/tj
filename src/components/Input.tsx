@@ -2,7 +2,7 @@ import {
   Input as ChakraInput,
   InputProps as ChakraInputProps,
 } from '@chakra-ui/react';
-import { ChangeEvent, forwardRef, useState } from 'react';
+import { ChangeEvent, forwardRef, useEffect, useState } from 'react';
 import FormControl, { FormControlProps } from './FormControl';
 
 export type InputProps = {
@@ -10,6 +10,7 @@ export type InputProps = {
   onValueChange?: (value: string) => void;
   formControlProps?: FormControlProps;
   errorMessage?: string;
+  hasExternalValue?: boolean;
 } & ChakraInputProps;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -20,6 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       onChange,
       formControlProps,
       errorMessage,
+      hasExternalValue,
       ...props
     },
     ref
@@ -27,6 +29,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const [hasValue, setHasValue] = useState(
       Boolean(props.defaultValue || props.value)
     );
+
+    useEffect(() => {
+      setHasValue(Boolean(props.value));
+    }, [props.value]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       const value = event.currentTarget.value;
@@ -42,8 +48,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         formLabelProps={{
           position: 'absolute',
           left: 6,
-          top: hasValue ? 2 : 5,
-          fontSize: hasValue ? '14px' : '18px',
+          top: hasExternalValue || hasValue ? 2 : 5,
+          fontSize: hasExternalValue || hasValue ? '14px' : '18px',
           transitionProperty: 'top,font-size',
           transitionDuration: 'fast',
         }}

@@ -8,7 +8,7 @@ const DealsPage = () => (
   <DealsProvider>
     <Flex flex={1} justify="center">
       <Flex h="calc(100vh - 74px)" flexDir="column" overflow="clip">
-        <Flex flexDir="row" overflow="clip" >
+        <Flex flexDir="row" overflow="clip">
           <DealsTable />
           <AddParameterButton />
         </Flex>
