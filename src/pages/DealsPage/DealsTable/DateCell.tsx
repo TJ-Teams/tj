@@ -32,6 +32,11 @@ const DateCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
     triggerKeys: ['Enter'],
   });
 
+  const handleSave = (date?: Date) => {
+    const isChanged = !dayjs(date).isSame(dayjs(getValue()));
+    if (isChanged) onUpdate?.(date);
+  };
+
   const value = getValue();
   const dateValue = value ? dayjs(value) : undefined;
   const normalizedValue = dateValue?.isValid()
@@ -50,7 +55,7 @@ const DateCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
         <DateInput
           defaultDate={dateValue?.toDate()}
           width={boxRef.current.getBoundingClientRect().width - 33}
-          onSave={onUpdate}
+          onSave={handleSave}
         />
       ) : (
         <Text noOfLines={1} children={normalizedValue} />

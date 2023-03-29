@@ -1,7 +1,7 @@
 import { ChakraProps, Flex, Grid } from '@chakra-ui/react';
 import { useForceUpdate } from '~/hooks';
+import { Deal } from '~/types/deals';
 import { useDealsContext } from '../deals-context';
-import { Deal } from '../types';
 import Cell from './Cell';
 import HeaderCell from './HeaderCell';
 
@@ -26,6 +26,7 @@ const DealsTable = () => {
 
   return (
     <Flex
+      minW="25vw"
       flexDir="column"
       overflow="auto"
       border="1px solid #b9b9b9"

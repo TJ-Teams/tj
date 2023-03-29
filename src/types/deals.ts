@@ -10,3 +10,8 @@ export type Deal = {
 };
 
 export type TypeParameter = 'string' | 'number' | 'date';
+
+export type DealsDto = {
+  parameters: Parameter[];
+  deals: Record<string, Deal>;
+};

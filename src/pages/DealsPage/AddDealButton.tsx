@@ -9,6 +9,7 @@ const AddDealButton = () => {
 
   const handleAdd = () => {
     const needToCreate =
+      deals.get.at(-1) === undefined ||
       Object.values(deals.get.at(-1) || {}).filter(Boolean).length > 1;
 
     const id = needToCreate ? uuidV4() : deals.get.at(-1)?.id || '';
@@ -18,7 +19,7 @@ const AddDealButton = () => {
       subscriptions.ping('table');
     }
 
-    const firstParameter = parameters.get[0]?.key;
+    const firstParameter = parameters.get.at(0)?.key;
 
     if (firstParameter) {
       subscriptions.ping(`id=${id};p=${firstParameter}:focus`, 50);

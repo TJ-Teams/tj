@@ -1,7 +1,5 @@
 import { FlexProps } from '@chakra-ui/react';
-import { useForceUpdate } from '~/hooks';
-import { useDealsContext } from '../deals-context';
-import { Deal, TypeParameter } from '../types';
+import { Deal, TypeParameter } from '~/types/deals';
 import DateCell from './DateCell';
 import NumberCell from './NumberCell';
 import StringCell from './StringCell';

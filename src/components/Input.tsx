@@ -45,7 +45,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
       if (isReadOnly) return;
       const value = event.currentTarget.value;
-      console.log(value);
       setHasValue(value.length > 0);
       onValueChange?.(value);
       onChange?.(event);

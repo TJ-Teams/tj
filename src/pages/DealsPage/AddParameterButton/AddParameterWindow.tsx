@@ -1,6 +1,6 @@
 import Window, { WindowProps } from '~/components/Window';
+import { Parameter } from '~/types/deals';
 import { useDealsContext } from '../deals-context';
-import { Parameter } from '../types';
 import ParameterForm from './ParameterForm';
 
 const AddParameterWindow = ({ isOpen, onClose }: WindowProps) => {

@@ -1,4 +1,5 @@
-import { DependencyList, useEffect } from "react";
+import { DependencyList, useEffect } from 'react';
+import useHandleError from './useHandleError';
 
 type Options<TResult, TError> = {
   deps?: DependencyList;
@@ -24,6 +25,8 @@ const useMethodAfterMount = <TResult, TError>(
     isSkip,
   } = options;
 
+  const handleError = useHandleError();
+
   useEffect(() => {
     let isCancel = false;
     const callMethod = async () => {
@@ -34,6 +37,7 @@ const useMethodAfterMount = <TResult, TError>(
           !isCancel && next?.(result);
         } catch (err) {
           !isCancel && onError?.(err as TError);
+          handleError(err)
         } finally {
           !isCancel && onEndLoading?.();
         }

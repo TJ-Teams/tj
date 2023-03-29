@@ -29,7 +29,8 @@ const StringCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
 
   const handleSave = () => {
     const value = inputRef.current?.value;
-    onUpdate?.(value);
+    const isChanged = value !== getValue();
+    if (isChanged) onUpdate?.(value);
     setIsEditor.off();
   };
 

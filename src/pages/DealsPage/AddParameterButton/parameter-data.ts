@@ -2,7 +2,7 @@ import * as yup from 'yup';
 import { RequiredStringSchema } from 'yup/lib/string';
 import { AnyObject } from 'yup/lib/types';
 import Form from '~/components/Form';
-import { Parameter, TypeParameter } from '../types';
+import { Parameter, TypeParameter } from '~/types/deals';
 
 type TypeParameterSchema = RequiredStringSchema<
   TypeParameter | undefined,
