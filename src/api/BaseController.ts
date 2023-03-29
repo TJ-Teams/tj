@@ -7,7 +7,6 @@ const axios = axiosStatic.create({
 
 axios.interceptors.request.use(
   async (config) => {
-    isDev && (await new Promise((resolve) => setTimeout(resolve, 100)));
     // TODO add auth token
     // (config.headers as AxiosHeaders).set('Authorization', `Bearer TOKEN`);
     return config;

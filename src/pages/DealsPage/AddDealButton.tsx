@@ -1,8 +1,9 @@
-import { Flex, IconButton, Text } from '@chakra-ui/react';
+import { Flex, IconButton, Spacer, Text } from '@chakra-ui/react';
 import { memo } from 'react';
 import { useDealsContext } from './deals-context';
 import PlusIcon from './PlusIcon';
 import { v4 as uuidV4 } from 'uuid';
+import SaveIndicator from './SaveIndicator';
 
 const AddDealButton = () => {
   const { parameters, deals, subscriptions } = useDealsContext();
@@ -52,6 +53,8 @@ const AddDealButton = () => {
         noOfLines={1}
         children="Добавить сделку"
       />
+      <Spacer />
+      <SaveIndicator />
     </Flex>
   );
 };

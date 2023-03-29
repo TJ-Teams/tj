@@ -1,13 +1,15 @@
-import { createContext, ReactNode, useContext, useEffect } from 'react';
-import { v4 as uuidV4 } from 'uuid';
+import { createContext, ReactNode, useContext } from 'react';
+import api from '~/api';
 import { useDebounce, useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
-import safelyLocalStorage from '~/utils/safely-local-storage';
 import { Deal, Parameter } from '~/types/deals';
-import api from '~/api';
+import { IndicatorStatus } from './SaveIndicator';
 
-type SubscribeKey = 'table' | `id=${string};p=${string}:${string}`;
+type SubscribeKey =
+  | 'table'
+  | `id=${string};p=${string}:${string}`
+  | `indicator:${IndicatorStatus}`;
 
 type DealsContent = {
   subscriptions: UseSubscriptions<SubscribeKey>;
@@ -28,19 +30,30 @@ const DealsContext = createContext<DealsContent>({
 export const useDealsContext = (): DealsContent => useContext(DealsContext);
 
 export const DealsProvider = ({ children }: DealsProviderProps) => {
-  const debounce = useDebounce(1000);
+  const debounce = useDebounce(2500);
   const { isLoading, setIsLoading } = useLoadingState(true);
 
   const subscriptions = useSubscriptions<SubscribeKey>();
 
+  const updateDeals = (parameters: Parameter[], deals: Deal[]) => {
+    subscriptions.ping('indicator:not-saved');
+    debounce.set(() => {
+      subscriptions.ping('indicator:saved');
+      api.deals.updateDeals(parameters, deals).then(
+        (_) => subscriptions.ping('indicator:saved'),
+        (_) => subscriptions.ping('indicator:error')
+      );
+    });
+  };
+
   const deals = useValue([] as Deal[], {
     onUpdate: (d) => {
-      debounce.set(() => api.deals.updateDeals(parameters.get, d));
+      updateDeals(parameters.get, d);
     },
   });
   const parameters = useValue([] as Parameter[], {
     onUpdate: (p) => {
-      debounce.set(() => api.deals.updateDeals(p, deals.get));
+      updateDeals(p, deals.get);
     },
   });
 
