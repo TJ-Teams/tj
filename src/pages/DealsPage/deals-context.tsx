@@ -60,6 +60,7 @@ export const DealsProvider = ({ children }: DealsProviderProps) => {
   useMethodAfterMount(() => api.deals.getDeals(), {
     onStartLoading: setIsLoading.on,
     onEndLoading: setIsLoading.off,
+    onError: () => subscriptions.ping('indicator:error', 100),
     next: ([p, d]) => {
       parameters.set(p, true);
       deals.set(d, true);

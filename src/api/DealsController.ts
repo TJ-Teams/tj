@@ -7,7 +7,11 @@ export default class DealsController extends BaseController {
   async getDeals(): Promise<[Parameter[], Deal[]]> {
     const data = await this.get<DealsDto>('/api/data/get');
 
-    return [data.parameters, Object.values(data.deals)];
+    const parameters =
+      data.parameters.length > 0 ? data.parameters : this.defaultParameters;
+    const deals = Object.values(data.deals);
+
+    return [parameters, deals];
   }
 
   async updateDeals(parameters: Parameter[], deals: Deal[]): Promise<void> {
@@ -18,6 +22,16 @@ export default class DealsController extends BaseController {
 
     await this.put<void, DealsDto>('/api/data/add', data);
   }
+
+  protected readonly defaultParameters: Parameter[] = [
+    { key: 'name', name: 'Название компании', type: 'string' },
+    { key: 'start-date', name: 'Дата входа', type: 'date' },
+    { key: 'end-date', name: 'Дата выхода', type: 'date' },
+    { key: 'deal-type', name: 'Вид сделки', type: 'string' },
+    { key: 'position-volume', name: 'Объем позиции', type: 'number' },
+    { key: 'market', name: 'Рынок', type: 'string' },
+    { key: 'total', name: 'Итог сделки', type: 'number' },
+  ];
 }
 
 export class MockDealsController extends DealsController {
@@ -74,17 +88,4 @@ export class MockDealsController extends DealsController {
   ];
 
   private readonly parametersKey = 'deals-page:parameters';
-  private readonly defaultParameters: Parameter[] = [
-    { key: 'name', name: 'Наименование', type: 'string' },
-    { key: 'startDate', name: 'Дата входа', type: 'date' },
-    { key: 'endDate', name: 'Дата выхода', type: 'date' },
-    { key: 'strategy', name: 'Стратегий', type: 'string' },
-    { key: 'mark', name: 'Показатель', type: 'string' },
-    { key: 'sector', name: 'Сектор', type: 'string' },
-    { key: 'positionVolume', name: 'Объем позиции', type: 'number' },
-    { key: 'market', name: 'Рынок', type: 'string' },
-    { key: 'income', name: 'Доход', type: 'number' },
-    { key: 'factor', name: 'Factor', type: 'number' },
-    { key: 'accuracy', name: 'Точность', type: 'number' },
-  ];
 }

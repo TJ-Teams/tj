@@ -2,7 +2,7 @@ import axiosStatic, { AxiosError, AxiosResponse } from 'axios';
 import isDev from '~/utils/is-dev';
 
 const axios = axiosStatic.create({
-  baseURL: import.meta.env.VITE_API,
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 axios.interceptors.request.use(
