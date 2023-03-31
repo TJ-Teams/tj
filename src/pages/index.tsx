@@ -1,3 +1,4 @@
+import DealsPage from './DealsPage';
 import LoginPage from './LoginPage';
 import MainPage from './MainPage';
 import paths from './paths';
@@ -11,6 +12,10 @@ export default {
   register: {
     path: paths.register.path,
     Component: RegisterPage,
+  },
+  deals: {
+    path: paths.deals.path,
+    Component: DealsPage,
   },
   main: {
     path: paths.main.path,

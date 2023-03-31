@@ -27,6 +27,7 @@ const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
           lineHeight="17px"
           fontWeight="400"
           fontSize="14px"
+          pointerEvents="none"
           children={label}
           {...formLabelProps}
         />
@@ -35,7 +36,7 @@ const FormControl = forwardRef<HTMLDivElement, FormControlProps>(
       <Collapse in={Boolean(errorMessage)} animateOpacity unmountOnExit>
         <FormHelperText
           mt={2}
-          color="danger.2"
+          color="#EF302B"
           lineHeight="140%"
           fontWeight="normal"
           fontSize="12px"
