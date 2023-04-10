@@ -49,7 +49,7 @@ const NumberCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
 
   const numberValue = parseFloat((getValue() || '').toString());
   const normalizedValue = !isNaN(numberValue)
-    ? numberValue.toLocaleString()
+    ? numberValue.toLocaleString().replaceAll(',', '.')
     : '—';
 
   return (
@@ -63,10 +63,9 @@ const NumberCell = ({ cellKey, getValue, onUpdate, ...props }: Props) => {
     >
       {isEditor && boxRef.current ? (
         <NumberInput
+          max={Number.MAX_VALUE}
           variant="unstyled"
-          defaultValue={
-            !isNaN(numberValue) ? numberValue.toLocaleString() : undefined
-          }
+          defaultValue={!isNaN(numberValue) ? numberValue : undefined}
         >
           <NumberInputField
             ref={inputRef}

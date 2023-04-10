@@ -12,6 +12,7 @@ import { useState } from 'react';
 import Dropzone from '~/components/Dropzone';
 import Window, { WindowProps } from '~/components/Window';
 import { Deal, Parameter } from '~/types/deals';
+import importTinkoffDeals from '~/utils/import-tinkoff-deals';
 import { useDealsContext } from '../deals-context';
 
 enum ProviderType {
@@ -37,7 +38,7 @@ const providers: Record<ProviderType, Provider> = {
         '.xlsx',
       ],
     },
-    importDeals: async () => [[], []],
+    importDeals: importTinkoffDeals,
   },
   [ProviderType.Unknown]: {
     type: ProviderType.Unknown,

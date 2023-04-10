@@ -21,7 +21,7 @@ export const createParameterFormSchema = (existingParameters: Parameter[]) =>
           existingParameters.map((p) => p.key),
           'Параметр с таким ключом уже существует'
         )
-        .matches(/^[a-zA-Z\-]+$/, 'Допустимы только буквы a-Z и символ тире'),
+        .matches(/^[a-za-яё\-]+$/, 'Допустимы только буквы a-z, а-я и символ тире'),
       name: yup
         .string()
         .trim()
