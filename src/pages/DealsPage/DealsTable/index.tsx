@@ -26,7 +26,7 @@ const DealsTable = () => {
 
   return (
     <Flex
-      minW="25vw"
+      minW="700px"
       flexDir="column"
       overflow="auto"
       border="1px solid #b9b9b9"

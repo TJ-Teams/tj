@@ -1,7 +1,7 @@
 import { HStack, Spinner, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ErrorIcon, SuccessIcon, WarningIcon } from '~/icons';
-import { useDealsContext } from './deals-context';
+import { useDealsContext } from '../deals-context';
 
 export type IndicatorStatus = 'saved' | 'not-saved' | 'loading' | 'error';
 

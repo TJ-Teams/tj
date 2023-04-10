@@ -4,7 +4,7 @@ import { useDebounce, useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
 import { Deal, Parameter } from '~/types/deals';
-import { IndicatorStatus } from './SaveIndicator';
+import { IndicatorStatus } from './BottomBar/SaveIndicator';
 
 type SubscribeKey =
   | 'table'

@@ -112,6 +112,7 @@ const Window = ({
             py="36px"
             display="flex"
             alignItems="center"
+            fontSize="24px"
             {...headerProps}
           >
             <Heading

@@ -1,8 +1,8 @@
 import { Flex } from '@chakra-ui/react';
-import AddDealButton from './AddDealButton';
 import AddParameterButton from './AddParameterButton';
-import { DealsProvider } from './deals-context';
+import BottomBar from './BottomBar';
 import DealsTable from './DealsTable';
+import { DealsProvider } from './deals-context';
 
 const DealsPage = () => (
   <DealsProvider>
@@ -12,7 +12,7 @@ const DealsPage = () => (
           <DealsTable />
           <AddParameterButton />
         </Flex>
-        <AddDealButton />
+        <BottomBar />
       </Flex>
     </Flex>
   </DealsProvider>

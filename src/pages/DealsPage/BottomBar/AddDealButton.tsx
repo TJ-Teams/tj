@@ -1,11 +1,11 @@
-import { Flex, IconButton, Spacer, Text } from '@chakra-ui/react';
-import { memo } from 'react';
-import { useDealsContext } from './deals-context';
-import PlusIcon from './PlusIcon';
+import { HStack, IconButton, Text } from '@chakra-ui/react';
+import { useRef } from 'react';
 import { v4 as uuidV4 } from 'uuid';
-import SaveIndicator from './SaveIndicator';
+import { useDealsContext } from '../deals-context';
+import PlusIcon from '../PlusIcon';
 
 const AddDealButton = () => {
+  const ref = useRef<HTMLButtonElement>(null);
   const { parameters, deals, subscriptions } = useDealsContext();
 
   const handleAdd = () => {
@@ -28,24 +28,22 @@ const AddDealButton = () => {
   };
 
   return (
-    <Flex
-      px={4}
-      mr="49px"
+    <HStack
+      px={2}
+      py={4}
+      spacing={2}
       cursor="pointer"
       _hover={{ color: 'gray' }}
-      align="center"
-      border="1px solid #b9b9b9"
-      borderTop="none"
-      onClick={handleAdd}
+      onClick={() => ref.current?.click()}
     >
       <IconButton
-        mx={2}
-        my={4}
+        ref={ref}
         boxSize={4}
         borderRadius={2}
         variant="clear"
         aria-label="добавить сделку"
         icon={<PlusIcon />}
+        onClick={handleAdd}
       />
       <Text
         color="inherit"
@@ -53,10 +51,8 @@ const AddDealButton = () => {
         noOfLines={1}
         children="Добавить сделку"
       />
-      <Spacer />
-      <SaveIndicator />
-    </Flex>
+    </HStack>
   );
 };
 
-export default memo(AddDealButton);
+export default AddDealButton;
