@@ -7,6 +7,11 @@ const styles: Styles = {
       bg: 'white',
       scrollBehavior: 'smooth',
     },
+    ':root': {
+      '--dsg-selection-border-color': '#cf92ff',
+      '--dsg-border-color': '#e5e5e5',
+      '--dsg-selection-border-radius': '0px',
+    },
   },
 };
 

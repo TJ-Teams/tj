@@ -1,3 +1,5 @@
+import 'react-datasheet-grid/dist/style.css';
+
 import { ChakraBaseProvider } from '@chakra-ui/react';
 import ru from 'date-fns/locale/ru';
 import { StrictMode } from 'react';

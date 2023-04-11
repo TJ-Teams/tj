@@ -1,88 +1,162 @@
-import { ChakraProps, Flex, Grid } from '@chakra-ui/react';
-import { useForceUpdate } from '~/hooks';
-import { Deal } from '~/types/deals';
+import { Box, ChakraProps } from '@chakra-ui/react';
+import { Deal, Parameter, TypeParameter } from '~/types/deals';
 import { useDealsContext } from '../deals-context';
-import Cell from './Cell';
-import HeaderCell from './HeaderCell';
+
+import {
+  Column,
+  ContextMenuItem,
+  createContextMenuComponent,
+  dateColumn,
+  DynamicDataSheetGrid,
+  floatColumn,
+  keyColumn,
+  textColumn,
+} from 'react-datasheet-grid';
+
+import { useCallback, useMemo, useState } from 'react';
+import { v4 as uuidV4 } from 'uuid';
+import BottomBar from '../BottomBar';
+import dayjs from 'dayjs';
 
 const DealsTable = () => {
-  const forceUpdate = useForceUpdate();
   const { deals, parameters, subscriptions } = useDealsContext();
 
-  subscriptions.useSubscribe('table', forceUpdate);
+  const columns = useMemo(() => {
+    return parameters.get.map<Column<Deal>>((p) => ({
+      // @ts-ignore
+      ...keyColumn(p.key, getColumnByType(p.type)),
+      title: p.name,
+      minWidth: 300,
+    }));
+  }, [parameters.get.length]);
 
-  const getCellValue = (index: number, key: string) => {
-    return () => deals.get[index][key];
-  };
+  const [data, setData] = useState(() =>
+    normalizeDeals(deals.get, parameters.get)
+  );
 
-  const updateCell = (index: number, key: string) => {
-    return (value: Deal['type']) => {
-      const newDeals = [...deals.get];
-      const object = { ...newDeals[index], [key]: value };
-      newDeals[index] = object;
-      deals.set(newDeals);
-    };
-  };
+  const handleDealsChange = useCallback((newDeals: Deal[]) => {
+    deals.set(newDeals);
+    setData(newDeals);
+  }, []);
+
+  subscriptions.useSubscribe('table', () => {
+    setData(normalizeDeals(deals.get, parameters.get));
+  });
 
   return (
-    <Flex
-      minW="700px"
-      flexDir="column"
-      overflow="auto"
-      border="1px solid #b9b9b9"
-      borderTop="none"
-      css={scrollBarStyle}
-      scrollBehavior="smooth"
-    >
-      <Grid
-        flex={1}
-        gridAutoRows="55px"
-        gridTemplateColumns={`repeat(${parameters.get.length}, max-content)`}
-      >
-        {parameters.get.map((p, i) => (
-          <HeaderCell
-            key={`header-${p.key}`}
-            name={p.name}
-            borderLeft={i !== 0 ? '1px solid #b9b9b9' : 'none'}
-          />
-        ))}
-        {deals.get.map((d, i) =>
-          parameters.get.map((p, j) => (
-            <Cell
-              key={`row-${d.id}-${p.key}`}
-              cellKey={`id=${d.id};p=${p.key}`}
-              isSecondary={i % 2 === 1}
-              borderLeft={j !== 0 ? '1px solid #b9b9b9' : 'none'}
-              type={p.type}
-              getValue={getCellValue(i, p.key)}
-              onUpdate={updateCell(i, p.key)}
-            />
-          ))
-        )}
-      </Grid>
-    </Flex>
+    <Box overflow="hidden" sx={dataSheetGridStyles}>
+      <DynamicDataSheetGrid
+        rowKey="id"
+        columns={columns}
+        value={data}
+        onChange={handleDealsChange}
+        createRow={createRow}
+        duplicateRow={duplicateRow}
+        addRowsComponent={BottomBar}
+        contextMenuComponent={ContextMenu}
+      />
+    </Box>
   );
 };
 
-const scrollBarStyle: ChakraProps['css'] = {
-  '&::-webkit-scrollbar': {
-    width: '10px',
-    height: '10px',
+const normalizeDeals = (deals: Deal[], parameters: Parameter[]) => {
+  const columnWithDate = parameters.filter((p) => p.type === 'date');
+  return deals.map((deal) => {
+    const fixedDeals = Object.fromEntries(
+      columnWithDate.map((p) => {
+        const date = dayjs(deal[p.key]);
+        const normalizedDate =
+          deal[p.key] && date.isValid() ? date.toDate() : undefined;
+        return [p.key, normalizedDate];
+      })
+    );
+    return { ...deal, ...fixedDeals };
+  });
+};
+
+const getColumnByType = (type: TypeParameter) => {
+  switch (type) {
+    case 'date':
+      return dateColumn;
+    case 'number':
+      return floatColumn;
+    default:
+      return textColumn;
+  }
+};
+
+const createRow = () => ({ id: uuidV4() });
+
+const duplicateRow = (opts: { rowData: Deal; rowIndex: number }): Deal => ({
+  ...opts.rowData,
+  id: uuidV4(),
+});
+
+const ContextMenu = createContextMenuComponent((item: ContextMenuItem) => {
+  switch (item.type) {
+    case 'COPY':
+      return <>Копировать</>;
+    case 'CUT':
+      return <>Вырезать</>;
+    case 'PASTE':
+      return <>Вставить</>;
+    case 'DELETE_ROW':
+      return <>Удалить строчку</>;
+    case 'DELETE_ROWS':
+      return (
+        <>
+          Удалить строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
+        </>
+      );
+    case 'DUPLICATE_ROW':
+      return <>Дублировать строчку</>;
+    case 'DUPLICATE_ROWS':
+      return (
+        <>
+          Дублировать строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
+        </>
+      );
+    case 'INSERT_ROW_BELLOW':
+      return <>Создать строчку снизу</>;
+    default:
+      return item;
+  }
+});
+
+const dataSheetGridStyles: ChakraProps['sx'] = {
+  '.dsg-container': {
+    minWidth: 'calc(100vw - 49px)',
+    minHeight: 'calc(100vh - 130px)',
+    border: 'none',
+    scrollBehavior: 'smooth',
+    '&::-webkit-scrollbar': {
+      width: '15px',
+      height: '15px',
+    },
+    '&::-webkit-scrollbar:vertical': {
+      borderLeft: '1px solid #e5e5e5',
+    },
+    '&::-webkit-scrollbar:horizontal': {
+      borderTop: '1px solid #e5e5e5',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#f3e4ff',
+      border: '0.5px solid #cf92ff',
+      borderRadius: 4,
+    },
   },
-  '&::-webkit-scrollbar:vertical': {
-    borderLeft: '1px solid #b9b9b9',
+  '.dsg-cell-header': {
+    bg: '#f3e4ff',
   },
-  '&::-webkit-scrollbar:horizontal': {
-    borderTop: '1px solid #b9b9b9',
+  '.dsg-cell-header, .dsg-cell-gutter': {
+    color: 'black',
+    justifyContent: 'center',
   },
-  '&::-webkit-scrollbar-thumb': {
-    background: '#f3e4ff',
+  '.dsg-cell-header-active, .dsg-cell-gutter-active': {
+    fontWeight: 'bold',
   },
-  '&::-webkit-scrollbar-thumb:vertical': {
-    borderLeft: '1px solid #b9b9b9',
-  },
-  '&::-webkit-scrollbar-thumb:horizontal': {
-    borderTop: '1px solid #b9b9b9',
+  'dsg-scrollable-view-container': {
+    display: 'none',
   },
 };
 

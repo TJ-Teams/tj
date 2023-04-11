@@ -1,18 +1,13 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import { memo } from 'react';
+import { AddRowsComponentProps } from 'react-datasheet-grid';
 import AddDealButton from './AddDealButton';
 import ImportDealsButton from './ImportDealsButton';
 import SaveIndicator from './SaveIndicator';
 
-const BottomBar = () => (
-  <Flex
-    px={4}
-    mr="49px"
-    align="center"
-    border="1px solid #b9b9b9"
-    borderTop="none"
-  >
-    <AddDealButton />
+const BottomBar = ({ addRows }: AddRowsComponentProps) => (
+  <Flex px={4} align="center">
+    <AddDealButton onAdd={() => addRows()} />
     <ImportDealsButton />
     <Spacer />
     <SaveIndicator />

@@ -1,5 +1,4 @@
 import { Flex, IconButton, Text, useBoolean } from '@chakra-ui/react';
-import Window from '~/components/Window';
 import PlusIcon from '../PlusIcon';
 import AddParameterWindow from './AddParameterWindow';
 
@@ -14,8 +13,6 @@ const AddParameterButton = () => {
       _hover={{ color: 'gray' }}
       flexDir="column"
       align="center"
-      borderRight="1px solid #b9b9b9"
-      borderBottom="1px solid #b9b9b9"
       onClick={setIsOpen.on}
     >
       <IconButton
