@@ -1,6 +1,7 @@
 import DealsController, { MockDealsController } from './DealsController';
 
 export default {
-  // deals: new MockDealsController(),
-  deals: new DealsController(),
+  deals: import.meta.env.VITE_OFFLINE
+    ? new MockDealsController()
+    : new DealsController(),
 };

@@ -1,8 +1,8 @@
-import * as xlsx from 'xlsx';
-import { Deal, Parameter, TypeParameter } from '~/types/deals';
-import { v4 as uuidV4 } from 'uuid';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { v4 as uuidV4 } from 'uuid';
+import * as xlsx from 'xlsx';
+import { Deal, Parameter, TypeParameter } from '~/types/deals';
 import { isDefined } from './is-defined';
 
 dayjs.extend(customParseFormat);
@@ -12,6 +12,25 @@ const startString =
 
 const endString =
   '1.2 Информация о неисполненных сделках на конец отчетного периода';
+
+const parameters: Parameter[] = [
+  { key: 'start-date', name: 'Дата заключения', type: 'date' },
+  { key: 'start-time', name: 'Время', type: 'string' },
+  { key: 'market', name: 'Торговая площадка', type: 'string' },
+  { key: 'trading-mode', name: 'Режим торгов', type: 'string' },
+  { key: 'deal-type', name: 'Вид сделки', type: 'string' },
+  { key: 'asset-code', name: 'Код актива', type: 'string' },
+  { key: 'unit-price', name: 'Цена за единицу', type: 'number' },
+  { key: 'price-currency', name: 'Валюта цены', type: 'string' },
+  { key: 'amount', name: 'Количество', type: 'number' },
+  { key: 'total', name: 'Сумма сделки', type: 'number' },
+  { key: 'payment-currency', name: 'Валюта расчетов', type: 'string' },
+  { key: 'broker', name: 'Контрагент / Брокер', type: 'string' },
+  { key: 'end-date', name: 'Дата расчетов', type: 'date' },
+  { key: 'delivery-date', name: 'Дата поставки', type: 'date' },
+];
+
+const parametersMap = new Map(parameters.map((p) => [p.name, p]));
 
 const selectRangeIn = (sheet: xlsx.Sheet): void => {
   const range = xlsx.utils.decode_range(sheet['!ref']!);
@@ -49,22 +68,6 @@ const clearProperties = (object: Record<string, string>) =>
       .map(([key, value]) => [key.replace(/\n|\r|\t/g, ''), value])
   );
 
-const normalizeParameterKey = (key: string) =>
-  key
-    .trim()
-    .toLowerCase()
-    .replace(/[.,()%\/]/g, '')
-    .replace(/\s+/g, ' ')
-    .replace(/ /g, '-');
-
-const detectValueType = (value: string): TypeParameter => {
-  if (dayjs(value, 'DD.MM.YYYY', true).isValid()) return 'date';
-  if (value.length > 0 && !isNaN(Number(value.replaceAll(',', '.')))) {
-    return 'number';
-  }
-  return 'string';
-};
-
 const castValueToType = (
   value: string,
   type: TypeParameter
@@ -79,23 +82,18 @@ const castValueToType = (
   }
 };
 
-const toDeal =
-  (parametersMap: Map<string, Parameter>) =>
-  (object: Record<string, string>): Deal => {
-    const deal = Object.fromEntries(
-      Object.entries(object)
-        .map(([name, value]) => {
-          const parameter = parametersMap.get(name);
-          if (!parameter) return undefined;
-          return [parameter.key, castValueToType(value, parameter.type)];
-        })
-        .filter(isDefined)
-    );
-    return {
-      ...deal,
-      id: uuidV4(),
-    };
-  };
+const toDeal = (object: Record<string, string>): Deal => {
+  const deal = Object.fromEntries(
+    Object.entries(object)
+      .map(([name, value]) => {
+        const parameter = parametersMap.get(name);
+        if (!parameter) return undefined;
+        return [parameter.key, castValueToType(value, parameter.type)];
+      })
+      .filter(isDefined)
+  );
+  return { ...deal, id: uuidV4() };
+};
 
 const importTinkoffDeals = async (
   file: File
@@ -120,20 +118,9 @@ const importTinkoffDeals = async (
     throw new Error('No deals in file');
   }
 
-  const parametersMap = new Map<string, Parameter>(
-    Object.entries(result[0]).map(([name, value]) => {
-      const parameter: Parameter = {
-        name,
-        key: normalizeParameterKey(name),
-        type: detectValueType(value),
-      };
-      return [name, parameter];
-    })
-  );
+  const deals = result.map(toDeal);
 
-  const deals = result.map(toDeal(parametersMap));
-
-  return [[...parametersMap.values()], deals];
+  return [parameters, deals];
 };
 
 export default importTinkoffDeals;

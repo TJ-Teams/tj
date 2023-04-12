@@ -26,7 +26,7 @@ const DealsTable = () => {
       // @ts-ignore
       ...keyColumn(p.key, getColumnByType(p.type)),
       title: p.name,
-      minWidth: 300,
+      minWidth: 15 * Math.max(12, p.name.length),
     }));
   }, [parameters.get.length]);
 
@@ -155,8 +155,8 @@ const dataSheetGridStyles: ChakraProps['sx'] = {
   '.dsg-cell-header-active, .dsg-cell-gutter-active': {
     fontWeight: 'bold',
   },
-  'dsg-scrollable-view-container': {
-    display: 'none',
+  '.dsg-scrollable-view-container': {
+    minHeight: 'calc(100vh - 145px)',
   },
 };
 

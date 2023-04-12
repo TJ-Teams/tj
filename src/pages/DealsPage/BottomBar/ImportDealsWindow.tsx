@@ -28,29 +28,6 @@ type Provider = {
   importDeals: (file: File) => Promise<[Parameter[], Deal[]]>;
 };
 
-const providers: Record<ProviderType, Provider> = {
-  [ProviderType.Tinkoff]: {
-    type: ProviderType.Tinkoff,
-    name: 'Тинькофф',
-    imageSrc: '/images/tinkoff.png',
-    acceptFiles: {
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
-        '.xlsx',
-      ],
-    },
-    importDeals: importTinkoffDeals,
-  },
-  [ProviderType.Unknown]: {
-    type: ProviderType.Unknown,
-    name: '???',
-    imageSrc: '/favicon.svg',
-    acceptFiles: {},
-    importDeals: async () => {
-      throw new Error('Not implemented');
-    },
-  },
-};
-
 const ImportDealsWindow = ({ isOpen, onClose }: WindowProps) => {
   const { parameters, deals, subscriptions } = useDealsContext();
 
@@ -78,8 +55,8 @@ const ImportDealsWindow = ({ isOpen, onClose }: WindowProps) => {
 
     try {
       const [newParameters, newDeals] = await providers[type].importDeals(file);
-      parameters.set(newParameters);
-      deals.set(newDeals);
+      parameters.set(mergeParameters(parameters.get, newParameters));
+      deals.set([...deals.get, ...newDeals]);
       handleClose();
       subscriptions.ping('table');
     } catch {
@@ -173,5 +150,40 @@ const ProviderButton = ({ imageSrc, name, onClick }: ProviderButtonProps) => (
     />
   </Stack>
 );
+
+const providers: Record<ProviderType, Provider> = {
+  [ProviderType.Tinkoff]: {
+    type: ProviderType.Tinkoff,
+    name: 'Тинькофф',
+    imageSrc: '/images/tinkoff.png',
+    acceptFiles: {
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
+        '.xlsx',
+      ],
+    },
+    importDeals: importTinkoffDeals,
+  },
+  [ProviderType.Unknown]: {
+    type: ProviderType.Unknown,
+    name: '???',
+    imageSrc: '/favicon.svg',
+    acceptFiles: {},
+    importDeals: async () => {
+      throw new Error('Not implemented');
+    },
+  },
+};
+
+const mergeParameters = (
+  oldParams: Parameter[],
+  newParams: Parameter[]
+): Parameter[] => {
+  const parametersMap = new Map(oldParams.map((p) => [p.key, p]));
+  newParams.forEach((p) => {
+    if (parametersMap.has(p.key)) return;
+    parametersMap.set(p.key, p);
+  });
+  return [...parametersMap.values()];
+};
 
 export default ImportDealsWindow;
