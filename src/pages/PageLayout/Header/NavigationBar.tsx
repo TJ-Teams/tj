@@ -16,7 +16,7 @@ const NavigationBar = () => (
   <HStack spacing="60px">
     <NavLink href={paths.main.makePath()} children="О нас" />
     <NavLink href={paths.deals.makePath()} children="Журнал сделок" />
-    <NavLink href="/" children="Визуализация статистики" />
+    <NavLink href={paths.stats.makePath()} children="Визуализация статистики" />
     <NavLink href="/" children="Рекомендации" />
   </HStack>
 );

@@ -12,6 +12,9 @@ const styles: Styles = {
       '--dsg-border-color': '#e5e5e5',
       '--dsg-selection-border-radius': '0px',
     },
+    '.recharts-sector, .recharts-pie': {
+      outline: 'none',
+    },
   },
 };
 

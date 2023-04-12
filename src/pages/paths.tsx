@@ -11,6 +11,10 @@ export default {
     path: '/deals',
     makePath: () => '/deals',
   },
+  stats: {
+    path: '/stats',
+    makePath: () => '/stats',
+  },
   main: {
     path: '/*',
     makePath: () => '/',

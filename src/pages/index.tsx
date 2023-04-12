@@ -3,6 +3,7 @@ import LoginPage from './LoginPage';
 import MainPage from './MainPage';
 import paths from './paths';
 import RegisterPage from './RegisterPage';
+import StatsPage from './StatsPage';
 
 export default {
   login: {
@@ -16,6 +17,10 @@ export default {
   deals: {
     path: paths.deals.path,
     Component: DealsPage,
+  },
+  stats: {
+    path: paths.stats.path,
+    Component: StatsPage,
   },
   main: {
     path: paths.main.path,
