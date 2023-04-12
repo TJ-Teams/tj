@@ -1,30 +1,19 @@
 import { Box, ChakraProps } from '@chakra-ui/react';
-import { Deal, Parameter, TypeParameter } from '~/types/deals';
-import { useDealsContext } from '../deals-context';
-
-import {
-  Column,
-  ContextMenuItem,
-  createContextMenuComponent,
-  dateColumn,
-  DynamicDataSheetGrid,
-  floatColumn,
-  keyColumn,
-  textColumn,
-} from 'react-datasheet-grid';
-
-import { useCallback, useMemo, useState } from 'react';
-import { v4 as uuidV4 } from 'uuid';
-import BottomBar from '../BottomBar';
 import dayjs from 'dayjs';
+import { useCallback, useMemo, useState } from 'react';
+import * as rdg from 'react-datasheet-grid';
+import { v4 as uuidV4 } from 'uuid';
+import { Deal, Parameter, TypeParameter } from '~/types/deals';
+import BottomBar from './BottomBar';
+import { useDealsContext } from './deals-context';
 
 const DealsTable = () => {
   const { deals, parameters, subscriptions } = useDealsContext();
 
   const columns = useMemo(() => {
-    return parameters.get.map<Column<Deal>>((p) => ({
+    return parameters.get.map<rdg.Column<Deal>>((p) => ({
       // @ts-ignore
-      ...keyColumn(p.key, getColumnByType(p.type)),
+      ...rdg.keyColumn(p.key, getColumnByType(p.type)),
       title: p.name,
       minWidth: 15 * Math.max(12, p.name.length),
     }));
@@ -45,7 +34,7 @@ const DealsTable = () => {
 
   return (
     <Box overflow="hidden" sx={dataSheetGridStyles}>
-      <DynamicDataSheetGrid
+      <rdg.DynamicDataSheetGrid
         rowKey="id"
         columns={columns}
         value={data}
@@ -77,11 +66,11 @@ const normalizeDeals = (deals: Deal[], parameters: Parameter[]) => {
 const getColumnByType = (type: TypeParameter) => {
   switch (type) {
     case 'date':
-      return dateColumn;
+      return rdg.dateColumn;
     case 'number':
-      return floatColumn;
+      return rdg.floatColumn;
     default:
-      return textColumn;
+      return rdg.textColumn;
   }
 };
 
@@ -92,36 +81,38 @@ const duplicateRow = (opts: { rowData: Deal; rowIndex: number }): Deal => ({
   id: uuidV4(),
 });
 
-const ContextMenu = createContextMenuComponent((item: ContextMenuItem) => {
-  switch (item.type) {
-    case 'COPY':
-      return <>Копировать</>;
-    case 'CUT':
-      return <>Вырезать</>;
-    case 'PASTE':
-      return <>Вставить</>;
-    case 'DELETE_ROW':
-      return <>Удалить строчку</>;
-    case 'DELETE_ROWS':
-      return (
-        <>
-          Удалить строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
-        </>
-      );
-    case 'DUPLICATE_ROW':
-      return <>Дублировать строчку</>;
-    case 'DUPLICATE_ROWS':
-      return (
-        <>
-          Дублировать строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
-        </>
-      );
-    case 'INSERT_ROW_BELLOW':
-      return <>Создать строчку снизу</>;
-    default:
-      return item;
+const ContextMenu = rdg.createContextMenuComponent(
+  (item: rdg.ContextMenuItem) => {
+    switch (item.type) {
+      case 'COPY':
+        return <>Копировать</>;
+      case 'CUT':
+        return <>Вырезать</>;
+      case 'PASTE':
+        return <>Вставить</>;
+      case 'DELETE_ROW':
+        return <>Удалить строчку</>;
+      case 'DELETE_ROWS':
+        return (
+          <>
+            Удалить строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
+          </>
+        );
+      case 'DUPLICATE_ROW':
+        return <>Дублировать строчку</>;
+      case 'DUPLICATE_ROWS':
+        return (
+          <>
+            Дублировать строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
+          </>
+        );
+      case 'INSERT_ROW_BELLOW':
+        return <>Создать строчку снизу</>;
+      default:
+        return item;
+    }
   }
-});
+);
 
 const dataSheetGridStyles: ChakraProps['sx'] = {
   '.dsg-container': {
