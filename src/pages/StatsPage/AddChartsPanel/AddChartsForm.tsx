@@ -83,8 +83,8 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
         alignItems="center"
       >
         <Spacer />
-        {Object.values(chartTypes).map(({ label }) => (
-          <Text children={label} />
+        {Object.values(chartTypes).map(({ label }, i) => (
+          <Text key={i} children={label} />
         ))}
         {chosenParameterKeys.get.map((key) => {
           const parameter = parametersMap.get(key);

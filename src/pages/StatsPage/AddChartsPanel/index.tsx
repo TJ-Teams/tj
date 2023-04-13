@@ -28,7 +28,7 @@ const AddChartsMenu = () => {
   return (
     <Box
       position="fixed"
-      zIndex="popover"
+      zIndex="banner"
       bg="white"
       px={5}
       py={4}

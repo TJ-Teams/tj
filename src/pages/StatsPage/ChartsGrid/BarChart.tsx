@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   Bar,
   BarChart as RBarChart,
@@ -8,16 +9,15 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import ChartLayout from './ChartLayout';
+import ChartLayout, { ChartLayoutProps } from './ChartLayout';
 
 type Props = {
-  title: string;
-  unitName: string;
+  chartKey: string;
   data: { name: string; value: number; color: string }[];
-};
+} & ChartLayoutProps;
 
-const BarChart = ({ title, unitName, data }: Props) => (
-  <ChartLayout title={title} unitName={unitName}>
+const BarChart = ({ title, subTitle, data, onRemove }: Props) => (
+  <ChartLayout title={title} subTitle={subTitle} onRemove={onRemove}>
     <RBarChart data={data} maxBarSize={55}>
       <CartesianGrid
         strokeDasharray="4"
@@ -39,4 +39,4 @@ const BarChart = ({ title, unitName, data }: Props) => (
   </ChartLayout>
 );
 
-export default BarChart;
+export default memo(BarChart, (prev, next) => prev.chartKey === next.chartKey);

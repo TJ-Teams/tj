@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   Cell,
   Legend,
@@ -6,16 +7,15 @@ import {
   PieLabel,
   PieLabelRenderProps,
 } from 'recharts';
-import ChartLayout from './ChartLayout';
+import ChartLayout, { ChartLayoutProps } from './ChartLayout';
 
 type Props = {
-  title: string;
-  unitName: string;
+  chartKey: string;
   data: { name: string; value: number; color: string }[];
-};
+} & ChartLayoutProps;
 
-const PieChart = ({ title, unitName, data }: Props) => (
-  <ChartLayout title={title} unitName={unitName}>
+const PieChart = ({ title, subTitle, data, onRemove }: Props) => (
+  <ChartLayout title={title} subTitle={subTitle} onRemove={onRemove}>
     <RPieChart>
       <Pie
         data={data}
@@ -74,4 +74,4 @@ const renderCustomizedLabel: PieLabel<PieLabelRenderProps> = ({
   );
 };
 
-export default PieChart;
+export default memo(PieChart, (prev, next) => prev.chartKey === next.chartKey);
