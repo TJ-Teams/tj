@@ -2,7 +2,7 @@ import axiosStatic, { AxiosError, AxiosResponse } from 'axios';
 import isDev from '~/utils/is-dev';
 
 const axios = axiosStatic.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
 });
 
 axios.interceptors.request.use(
