@@ -12,11 +12,12 @@ import ChartLayout from './ChartLayout';
 
 type Props = {
   title: string;
+  unitName: string;
   data: { name: string; value: number; color: string }[];
 };
 
-const BarChart = ({ title, data }: Props) => (
-  <ChartLayout title={title}>
+const BarChart = ({ title, unitName, data }: Props) => (
+  <ChartLayout title={title} unitName={unitName}>
     <RBarChart data={data} maxBarSize={55}>
       <CartesianGrid
         strokeDasharray="4"

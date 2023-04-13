@@ -10,11 +10,12 @@ import ChartLayout from './ChartLayout';
 
 type Props = {
   title: string;
+  unitName: string;
   data: { name: string; value: number; color: string }[];
 };
 
-const PieChart = ({ title, data }: Props) => (
-  <ChartLayout title={title}>
+const PieChart = ({ title, unitName, data }: Props) => (
+  <ChartLayout title={title} unitName={unitName}>
     <RPieChart>
       <Pie
         data={data}

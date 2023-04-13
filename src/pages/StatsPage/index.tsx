@@ -1,13 +1,20 @@
-import { Grid } from '@chakra-ui/react';
+import { Box, Grid } from '@chakra-ui/react';
 import BarChart from './BarChart';
 import PieChart from './PieChart';
 
 const StatsPage = () => (
-  <Grid m={8} gridAutoRows="500px" gridTemplateColumns="1fr 1fr" gridGap="20px">
-    <BarChart title="Точность, %" data={data1} />
-    <BarChart title="Доходность" data={data2} />
-    <PieChart title="Сектора" data={data3} />
-  </Grid>
+  <Box>
+    <Grid
+      m={8}
+      gridAutoRows="500px"
+      gridTemplateColumns="1fr 1fr"
+      gridGap="20px"
+    >
+      <BarChart title="Стратегия" unitName="Точность, %" data={data1} />
+      <BarChart title="Стратегия" unitName="Доходность" data={data2} />
+      <PieChart title="Сектора" unitName="Объем, %" data={data3} />
+    </Grid>
+  </Box>
 );
 
 const data1 = [
