@@ -10,8 +10,8 @@ export type Chart = {
 };
 
 export const chartTypes: Record<ChartType, { label: string }> = {
-  volume: { label: 'Объем, %' },
-  accuracy: { label: 'Точность, %' },
+  volume: { label: 'Объем' },
+  accuracy: { label: 'Точность' },
   profitability: { label: 'Доходность' },
 };
 

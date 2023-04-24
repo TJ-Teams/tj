@@ -78,13 +78,13 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
       <Grid
         mt={6}
         gridGap={6}
-        gridTemplateColumns="1fr repeat(3, max-content)"
+        gridTemplateColumns="1.75fr repeat(3, 1fr)"
         gridAutoRows="24px"
         alignItems="center"
       >
         <Spacer />
         {Object.values(chartTypes).map(({ label }, i) => (
-          <Text key={i} children={label} />
+          <Text justifySelf="center" key={i} children={label} />
         ))}
         {chosenParameterKeys.get.map((key) => {
           const parameter = parametersMap.get(key);
