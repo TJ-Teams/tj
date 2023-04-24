@@ -8,9 +8,8 @@ const expandHeaders = (sheet: xlsx.WorkSheet, parameters: Parameter[]) => {
   for (let c = range.s.c; c <= range.e.c; ++c) {
     const cell = xlsx.utils.encode_cell({ c, r: 0 });
     const parameter = parametersMap.get(sheet[cell]?.v);
-    console.log(sheet[cell]?.v, parameter);
     if (sheet[cell]?.v && parameter) {
-      sheet[cell].v = `${parameter.key}:${parameter.name}`;
+      sheet[cell].v = `${parameter.key}:${parameter.name}:${parameter.type}`;
     }
   }
 };
@@ -23,7 +22,7 @@ const exportTjDeals = (parameters: Parameter[], deals: Deal[]): string => {
   expandHeaders(sheet, parameters);
   const csv = xlsx.utils.sheet_to_csv(sheet, { strip: true });
 
-  return csv;
+  return `sep=,\n${csv}`;
 };
 
 export default exportTjDeals;

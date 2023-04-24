@@ -11,7 +11,11 @@ const ExportDealsButton = () => {
 
   const handleSubmit = trackLoading(async () => {
     const csvData = exportTjDeals(parameters.get, deals.get);
-    downloadFile(csvData, `TJ-Deals-${Date.now()}.csv`, 'text/csv');
+    downloadFile(
+      csvData,
+      `TJ-Deals-${Date.now()}.csv`,
+      'text/csv;charset=utf-8'
+    );
   });
 
   return (

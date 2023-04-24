@@ -8,6 +8,13 @@ import ReactDOM from 'react-dom/client';
 import Routers from './pages/Routers';
 import theme from './theme';
 
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(customParseFormat);
+dayjs.extend(utc);
+
 registerLocale('ru', ru);
 setDefaultLocale('ru');
 

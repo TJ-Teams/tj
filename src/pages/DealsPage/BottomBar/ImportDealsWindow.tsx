@@ -13,11 +13,12 @@ import Dropzone from '~/components/Dropzone';
 import Window, { WindowProps } from '~/components/Window';
 import { Deal, Parameter } from '~/types/deals';
 import importTinkoffDeals from '~/utils/import-tinkoff-deals';
+import importTjDeals from '~/utils/import-tj-deals';
 import { useDealsContext } from '../deals-context';
 
 enum ProviderType {
   Tinkoff,
-  Unknown,
+  TradersJournal,
 }
 
 type Provider = {
@@ -164,14 +165,12 @@ const providers: Record<ProviderType, Provider> = {
     },
     importDeals: importTinkoffDeals,
   },
-  [ProviderType.Unknown]: {
-    type: ProviderType.Unknown,
-    name: '???',
+  [ProviderType.TradersJournal]: {
+    type: ProviderType.TradersJournal,
+    name: 'Traders Journal',
     imageSrc: '/favicon.svg',
-    acceptFiles: {},
-    importDeals: async () => {
-      throw new Error('Not implemented');
-    },
+    acceptFiles: { 'text/csv': ['.csv'] },
+    importDeals: importTjDeals,
   },
 };
 

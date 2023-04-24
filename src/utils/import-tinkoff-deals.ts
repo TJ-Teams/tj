@@ -1,13 +1,8 @@
 import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import utc from 'dayjs/plugin/utc';
 import { v4 as uuidV4 } from 'uuid';
 import * as xlsx from 'xlsx';
 import { Deal, Parameter, TypeParameter } from '~/types/deals';
 import { isDefined } from './is-defined';
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
 
 const startString =
   '1.1 Информация о совершенных и исполненных сделках на конец отчетного периода';
