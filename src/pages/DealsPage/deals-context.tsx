@@ -8,6 +8,7 @@ import { IndicatorStatus } from './BottomBar/SaveIndicator';
 
 type SubscribeKey =
   | 'table'
+  | 'table-key'
   | `id=${string};p=${string}:${string}`
   | `indicator:${IndicatorStatus}`;
 

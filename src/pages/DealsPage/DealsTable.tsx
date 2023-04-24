@@ -1,6 +1,6 @@
 import { Box, ChakraProps } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as rdg from 'react-datasheet-grid';
 import { v4 as uuidV4 } from 'uuid';
 import { Deal, Parameter, TypeParameter } from '~/types/deals';
@@ -8,6 +8,7 @@ import BottomBar from './BottomBar';
 import { useDealsContext } from './deals-context';
 
 const DealsTable = () => {
+  const key = useRef(uuidV4());
   const { deals, parameters, subscriptions } = useDealsContext();
 
   const columns = useMemo(() => {
@@ -28,6 +29,12 @@ const DealsTable = () => {
     setData(newDeals);
   }, []);
 
+  // при удаление последнего столбца, компонент крашится
+  // поэтому приходится делать фулл ререндер
+  subscriptions.useSubscribe('table-key', () => {
+    key.current = uuidV4();
+  });
+
   subscriptions.useSubscribe('table', () => {
     setData(normalizeDeals(deals.get, parameters.get));
   });
@@ -35,6 +42,7 @@ const DealsTable = () => {
   return (
     <Box overflow="hidden" sx={dataSheetGridStyles}>
       <rdg.DynamicDataSheetGrid
+        key={key.current}
         rowKey="id"
         columns={columns}
         value={data}
@@ -81,38 +89,110 @@ const duplicateRow = (opts: { rowData: Deal; rowIndex: number }): Deal => ({
   id: uuidV4(),
 });
 
-const ContextMenu = rdg.createContextMenuComponent(
-  (item: rdg.ContextMenuItem) => {
-    switch (item.type) {
-      case 'COPY':
-        return <>Копировать</>;
-      case 'CUT':
-        return <>Вырезать</>;
-      case 'PASTE':
-        return <>Вставить</>;
-      case 'DELETE_ROW':
-        return <>Удалить строчку</>;
-      case 'DELETE_ROWS':
-        return (
-          <>
-            Удалить строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
-          </>
+const createContextMenuComponent =
+  (renderItem: (item: rdg.ContextMenuItem) => JSX.Element) =>
+  ({
+    clientX,
+    clientY,
+    items,
+    close,
+    cursorIndex,
+  }: rdg.ContextMenuComponentProps) => {
+    const { deals, parameters, subscriptions } = useDealsContext();
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const onClickOutside = (event: MouseEvent) => {
+        const clickInside = containerRef.current?.contains(
+          event.target as Node
         );
-      case 'DUPLICATE_ROW':
-        return <>Дублировать строчку</>;
-      case 'DUPLICATE_ROWS':
-        return (
-          <>
-            Дублировать строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
-          </>
-        );
-      case 'INSERT_ROW_BELLOW':
-        return <>Создать строчку снизу</>;
-      default:
-        return item;
-    }
+        if (!clickInside) close();
+      };
+
+      document.addEventListener('mousedown', onClickOutside);
+
+      return () => {
+        document.removeEventListener('mousedown', onClickOutside);
+      };
+    }, [close]);
+
+    const removeColumn = () => {
+      const parameter = parameters.get.at(cursorIndex?.col);
+      close();
+      if (!parameter) return;
+
+      const isLastColumn = cursorIndex?.col === parameters.get.length - 1;
+
+      const newDeals = deals.get.map((d) => {
+        return Object.fromEntries(
+          Object.entries(d).filter(([key, _]) => key !== parameter.key)
+        ) as Deal;
+      });
+      const newParameters = parameters.get.filter(
+        (_, i) => i !== cursorIndex?.col
+      );
+
+      deals.set(newDeals);
+      parameters.set(newParameters);
+      isLastColumn && subscriptions.ping('table-key');
+      subscriptions.ping('table');
+    };
+
+    return (
+      <div
+        className="dsg-context-menu"
+        style={{ left: `${clientX}px`, top: `${clientY}px` }}
+        ref={containerRef}
+      >
+        {items.map((item) => (
+          <div
+            key={item.type}
+            onClick={item.action}
+            className="dsg-context-menu-item"
+            children={renderItem(item)}
+          />
+        ))}
+        {cursorIndex?.col >= 0 && parameters.get.length > 1 && (
+          <div
+            className="dsg-context-menu-item"
+            onClick={removeColumn}
+            children="Удалить столбец"
+          />
+        )}
+      </div>
+    );
+  };
+
+const ContextMenu = createContextMenuComponent((item: rdg.ContextMenuItem) => {
+  switch (item.type) {
+    case 'COPY':
+      return <>Копировать</>;
+    case 'CUT':
+      return <>Вырезать</>;
+    case 'PASTE':
+      return <>Вставить</>;
+    case 'DELETE_ROW':
+      return <>Удалить строчку</>;
+    case 'DELETE_ROWS':
+      return (
+        <>
+          Удалить строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
+        </>
+      );
+    case 'DUPLICATE_ROW':
+      return <>Дублировать строчку</>;
+    case 'DUPLICATE_ROWS':
+      return (
+        <>
+          Дублировать строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
+        </>
+      );
+    case 'INSERT_ROW_BELLOW':
+      return <>Создать строчку снизу</>;
+    default:
+      return item;
   }
-);
+});
 
 const dataSheetGridStyles: ChakraProps['sx'] = {
   '.dsg-container': {
