@@ -1,6 +1,6 @@
-import { HStack, IconButton, Text } from '@chakra-ui/react';
+import { HStack, Icon, IconButton, Text } from '@chakra-ui/react';
 import { useRef } from 'react';
-import PlusIcon from '../PlusIcon';
+import { FaPlus } from 'react-icons/fa';
 
 type Props = {
   onAdd?: () => void;
@@ -23,8 +23,9 @@ const AddDealButton = ({ onAdd }: Props) => {
         boxSize={4}
         borderRadius={2}
         variant="clear"
+        color="#852AD3"
         aria-label="добавить сделку"
-        icon={<PlusIcon />}
+        icon={<Icon as={FaPlus} />}
         onClick={onAdd}
       />
       <Text

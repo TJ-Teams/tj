@@ -18,7 +18,12 @@ const SaveIndicator = () => {
   return (
     <HStack color={data.color}>
       <data.Icon boxSize={5} />
-      <Text color="inherit" fontWeight={500} children={data.message} />
+      <Text
+        color="inherit"
+        fontWeight={500}
+        noOfLines={1}
+        children={data.message}
+      />
     </HStack>
   );
 };

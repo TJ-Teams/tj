@@ -1,7 +1,13 @@
-import DealsController, { MockDealsController } from './DealsController';
+import { DealsController, MockDealsController } from './DealsController';
 
-export default {
+type Api = {
+  deals: DealsController;
+};
+
+const api: Api = {
   deals: import.meta.env.VITE_OFFLINE
     ? new MockDealsController()
     : new DealsController(),
 };
+
+export default api;

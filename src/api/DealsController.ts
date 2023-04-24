@@ -3,7 +3,7 @@ import BaseController from './BaseController';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import { v4 as uuidV4 } from 'uuid';
 
-export default class DealsController extends BaseController {
+export class DealsController extends BaseController {
   async getDeals(): Promise<[Parameter[], Deal[]]> {
     const data = await this.get<DealsDto>('/api/data/get');
 
@@ -21,6 +21,10 @@ export default class DealsController extends BaseController {
     };
 
     await this.put<void, DealsDto>('/api/data/add', data);
+  }
+
+  async resetDeals(): Promise<void> {
+    await this.updateDeals(this.defaultParameters, []);
   }
 
   protected readonly defaultParameters: Parameter[] = [
@@ -55,6 +59,10 @@ export class MockDealsController extends DealsController {
     safelyLocalStorage.setJson(this.parametersKey, parameters);
     safelyLocalStorage.setJson(this.dealsKey, deals);
     console.log('Updated deals');
+  }
+
+  override async resetDeals(): Promise<void> {
+    await this.updateDeals(this.defaultParameters, this.defaultDeals);
   }
 
   private readonly dealsKey = 'deals-page:deals';

@@ -1,5 +1,5 @@
-import { Flex, IconButton, Text, useBoolean } from '@chakra-ui/react';
-import PlusIcon from '../PlusIcon';
+import { Flex, Icon, IconButton, Text, useBoolean } from '@chakra-ui/react';
+import { FaPlus } from 'react-icons/fa';
 import AddParameterWindow from './AddParameterWindow';
 
 const AddParameterButton = () => {
@@ -21,8 +21,9 @@ const AddParameterButton = () => {
         boxSize={4}
         borderRadius={2}
         variant="clear"
+        color="#852AD3"
         aria-label="добавить сделку"
-        icon={<PlusIcon />}
+        icon={<Icon as={FaPlus} />}
       />
       <Text
         color="inherit"

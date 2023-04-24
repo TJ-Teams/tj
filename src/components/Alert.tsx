@@ -18,7 +18,7 @@ import { WindowProps } from './Window';
 type Props = {
   heading: string;
   isLoading?: boolean;
-  onSubmit?: () => void;
+  onSubmit?: () => Promise<void> | void;
   submitProps?: ButtonProps;
   cancelProps?: ButtonProps;
   children?: ReactNode;

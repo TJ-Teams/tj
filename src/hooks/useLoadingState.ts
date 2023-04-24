@@ -1,6 +1,6 @@
-import { useBoolean } from "@chakra-ui/react";
-import useCancelOnUnmount from "./useCancelOnUnmount";
-import useHandleError from "./useHandleError";
+import { useBoolean } from '@chakra-ui/react';
+import useCancelOnUnmount from './useCancelOnUnmount';
+import useHandleError from './useHandleError';
 
 const useLoadingState = (defaultIsLoading = false) => {
   const cancelOnUnmount = useCancelOnUnmount();

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useCallback, useContext } from 'react';
 import api from '~/api';
 import { useDebounce, useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
@@ -16,6 +16,7 @@ type DealsContent = {
   subscriptions: UseSubscriptions<SubscribeKey>;
   deals: ValueRef<Deal[]>;
   parameters: ValueRef<Parameter[]>;
+  refetch: () => Promise<void>;
 };
 
 type DealsProviderProps = {
@@ -26,6 +27,7 @@ const DealsContext = createContext<DealsContent>({
   subscriptions: { useSubscribe: () => {}, ping: () => {} },
   deals: { get: [], set: () => {} },
   parameters: { get: [], set: () => {} },
+  refetch: async () => {},
 });
 
 export const useDealsContext = (): DealsContent => useContext(DealsContext);
@@ -59,18 +61,23 @@ export const DealsProvider = ({ children }: DealsProviderProps) => {
   });
 
   useMethodAfterMount(() => api.deals.getDeals(), {
-    onStartLoading: setIsLoading.on,
     onEndLoading: setIsLoading.off,
     onError: () => subscriptions.ping('indicator:error', 100),
-    next: ([p, d]) => {
-      parameters.set(p, true);
-      deals.set(d, true);
+    next: ([newParameters, newDeals]) => {
+      parameters.set(newParameters, true);
+      deals.set(newDeals, true);
     },
   });
 
+  const refetch = async () => {
+    const [newParameters, newDeals] = await api.deals.getDeals();
+    parameters.set(newParameters, true);
+    deals.set(newDeals, true);
+  };
+
   return (
     <DealsContext.Provider
-      value={{ subscriptions, deals, parameters }}
+      value={{ subscriptions, deals, parameters, refetch }}
       children={isLoading ? null : children}
     />
   );
