@@ -2,6 +2,7 @@ export type Parameter = {
   key: string;
   name: string;
   type: TypeParameter;
+  isCustom?: boolean;
 };
 
 export type Deal = {

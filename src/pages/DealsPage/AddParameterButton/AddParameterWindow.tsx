@@ -7,7 +7,7 @@ const AddParameterWindow = ({ isOpen, onClose }: WindowProps) => {
   const { parameters, subscriptions } = useDealsContext();
 
   const handleSubmit = (newParameter: Parameter) => {
-    parameters.set([...parameters.get, newParameter]);
+    parameters.set([...parameters.get, { ...newParameter, isCustom: true }]);
     subscriptions.ping('table');
     onClose();
   };
