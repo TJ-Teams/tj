@@ -59,7 +59,8 @@ const ImportDealsWindow = ({ isOpen, onClose }: WindowProps) => {
       deals.set([...deals.get, ...newDeals]);
       handleClose();
       subscriptions.ping('table');
-    } catch {
+    } catch (err) {
+      console.warn('Invalid import', err);
       setError.on();
     }
   };

@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
 import { v4 as uuidV4 } from 'uuid';
 import * as xlsx from 'xlsx';
 import { Deal, Parameter, TypeParameter } from '~/types/deals';
 import { isDefined } from './is-defined';
 
 dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 const startString =
   '1.1 Информация о совершенных и исполненных сделках на конец отчетного периода';
@@ -71,10 +73,11 @@ const clearProperties = (object: Record<string, string>) =>
 const castValueToType = (
   value: string,
   type: TypeParameter
-): number | string | Date => {
+): number | string | Date | undefined => {
   switch (type) {
     case 'date':
-      return dayjs(value, 'DD.MM.YYYY').toDate();
+      const date = dayjs.utc(value, 'DD.MM.YYYY');
+      return date.isValid() ? date.format('M/DD/YY') : undefined;
     case 'number':
       return parseFloat(value.replaceAll(',', '.'));
     default:

@@ -1,7 +1,8 @@
-import { Deal, DealsDto, Parameter } from '~/types/deals';
-import BaseController from './BaseController';
-import safelyLocalStorage from '~/utils/safely-local-storage';
+import dayjs from 'dayjs';
 import { v4 as uuidV4 } from 'uuid';
+import { Deal, DealsDto, Parameter } from '~/types/deals';
+import safelyLocalStorage from '~/utils/safely-local-storage';
+import BaseController from './BaseController';
 
 export class DealsController extends BaseController {
   async getDeals(): Promise<[Parameter[], Deal[]]> {
@@ -70,8 +71,8 @@ export class MockDealsController extends DealsController {
     {
       id: uuidV4(),
       name: 'INTC',
-      'start-date': new Date(),
-      'end-date': new Date(),
+      'start-date': dayjs().format('M/DD/YY'),
+      'end-date': dayjs().format('M/DD/YY'),
       'deal-type': 'Восходящий клин',
       'position-volume': 200,
       market: 'Акции',
@@ -80,8 +81,8 @@ export class MockDealsController extends DealsController {
     {
       id: uuidV4(),
       name: 'BTC',
-      'start-date': new Date().toISOString(),
-      'end-date': new Date().toISOString(),
+      'start-date': dayjs().format('M/DD/YY'),
+      'end-date': dayjs().format('M/DD/YY'),
       'deal-type': 'Молот',
       'position-volume': 300,
       market: 'Криптовалюта',

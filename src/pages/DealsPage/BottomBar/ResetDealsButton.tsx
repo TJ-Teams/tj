@@ -10,13 +10,12 @@ const ResetDealsButton = () => {
   const { subscriptions, refetch } = useDealsContext();
   const { isLoading, trackLoading } = useLoadingState(false);
 
-  const handleSubmit = () =>
-    trackLoading(async () => {
-      await api.deals.resetDeals();
-      await refetch();
-      subscriptions.ping('table');
-      setIsOpen.off();
-    });
+  const handleSubmit = trackLoading(async () => {
+    await api.deals.resetDeals();
+    await refetch();
+    subscriptions.ping('table');
+    setIsOpen.off();
+  });
 
   return (
     <HStack
