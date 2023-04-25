@@ -13,10 +13,10 @@ const endString =
 const parameters: Parameter[] = [
   { key: 'start-date', name: 'Дата заключения', type: 'date' },
   { key: 'start-time', name: 'Время', type: 'string' },
-  { key: 'market', name: 'Торговая площадка', type: 'string' },
+  { key: 'marketplace', name: 'Торговая площадка', type: 'string' },
   { key: 'trading-mode', name: 'Режим торгов', type: 'string' },
   { key: 'deal-type', name: 'Вид сделки', type: 'string' },
-  { key: 'asset-code', name: 'Код актива', type: 'string' },
+  { key: 'name', name: 'Код актива', type: 'string' },
   { key: 'unit-price', name: 'Цена за единицу', type: 'number' },
   { key: 'price-currency', name: 'Валюта цены', type: 'string' },
   { key: 'amount', name: 'Количество', type: 'number' },
@@ -24,7 +24,6 @@ const parameters: Parameter[] = [
   { key: 'payment-currency', name: 'Валюта расчетов', type: 'string' },
   { key: 'broker', name: 'Контрагент / Брокер', type: 'string' },
   { key: 'end-date', name: 'Дата расчетов', type: 'date' },
-  { key: 'delivery-date', name: 'Дата поставки', type: 'date' },
 ];
 
 const parametersMap = new Map(parameters.map((p) => [p.name, p]));

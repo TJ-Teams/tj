@@ -32,10 +32,9 @@ export class DealsController extends BaseController {
     { key: 'name', name: 'Название компании', type: 'string' },
     { key: 'start-date', name: 'Дата входа', type: 'date' },
     { key: 'end-date', name: 'Дата выхода', type: 'date' },
-    { key: 'deal-type', name: 'Вид сделки', type: 'string' },
-    { key: 'position-volume', name: 'Объем позиции', type: 'number' },
+    { key: 'strategy', name: 'Стратегия', type: 'string' },
+    { key: 'amount', name: 'Объем позиции', type: 'number' },
     { key: 'market', name: 'Рынок', type: 'string' },
-    { key: 'total', name: 'Итог сделки', type: 'number' },
   ];
 }
 
@@ -73,20 +72,18 @@ export class MockDealsController extends DealsController {
       name: 'INTC',
       'start-date': dayjs().format('M/DD/YY'),
       'end-date': dayjs().format('M/DD/YY'),
-      'deal-type': 'Восходящий клин',
-      'position-volume': 200,
+      strategy: 'Восходящий клин',
+      amount: 200,
       market: 'Акции',
-      total: 200,
     },
     {
       id: uuidV4(),
       name: 'BTC',
       'start-date': dayjs().format('M/DD/YY'),
       'end-date': dayjs().format('M/DD/YY'),
-      'deal-type': 'Молот',
-      'position-volume': 300,
+      strategy: 'Молот',
+      amount: 300,
       market: 'Криптовалюта',
-      total: -200,
     },
   ];
 
