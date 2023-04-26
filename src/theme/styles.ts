@@ -6,6 +6,7 @@ const styles: Styles = {
       minH: '100vh',
       bg: 'white',
       scrollBehavior: 'smooth',
+      overflow: 'overlay',
     },
     ':root': {
       '--dsg-selection-border-color': '#cf92ff',

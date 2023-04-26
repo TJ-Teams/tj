@@ -15,6 +15,10 @@ export default {
     path: '/stats',
     makePath: () => '/stats',
   },
+  recommendations: {
+    path: '/recommendations',
+    makePath: () => '/recommendations',
+  },
   main: {
     path: '/*',
     makePath: () => '/',

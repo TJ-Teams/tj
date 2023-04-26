@@ -4,19 +4,25 @@ import BaseDateInput, { DateInputProps } from '~/components/DateInput';
 import { useForceUpdate, useValue } from '~/hooks';
 
 type Props = {
+  defaultStartDate?: Date;
+  defaultEndDate?: Date;
   onChange?: (startDate?: Date, endDate?: Date) => void;
 };
 
-const SelectDataRange = ({ onChange }: Props) => {
+const SelectDataRange = ({
+  defaultStartDate,
+  defaultEndDate,
+  onChange,
+}: Props) => {
   const forceUpdate = useForceUpdate();
 
-  const startDate = useValue<Date | undefined>(undefined, {
+  const startDate = useValue(defaultStartDate, {
     onUpdate: (date) => {
       onChange?.(date, endDate.get);
       forceUpdate();
     },
   });
-  const endDate = useValue<Date | undefined>(undefined, {
+  const endDate = useValue(defaultEndDate, {
     onUpdate: (date) => {
       onChange?.(startDate.get, date);
     },
@@ -25,9 +31,13 @@ const SelectDataRange = ({ onChange }: Props) => {
   return (
     <HStack>
       <Text children="Период от" />
-      <DateInput onSave={startDate.set} />
+      <DateInput defaultDate={defaultStartDate} onSave={startDate.set} />
       <Text children="до" />
-      <DateInput minDate={startDate.get} onSave={endDate.set} />
+      <DateInput
+        defaultDate={defaultEndDate}
+        minDate={startDate.get}
+        onSave={endDate.set}
+      />
     </HStack>
   );
 };

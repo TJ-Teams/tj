@@ -13,7 +13,7 @@ import { ChangeEvent, Fragment, useState } from 'react';
 import { useForceUpdate, useValue } from '~/hooks';
 import { Chart, ChartType, chartTypes } from '../chart-type';
 import { useStatsContext } from '../stats-context';
-import SelectDataRange from './SelectDataRange';
+import SelectDataRange from '../../../components/SelectDataRange';
 
 type Props = {
   onSubmit?: (charts: Chart[]) => void;
