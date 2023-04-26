@@ -11,7 +11,7 @@ const endString =
   '1.2 Информация о неисполненных сделках на конец отчетного периода';
 
 const parameters: Parameter[] = [
-  { key: 'start-date', name: 'Дата заключения', type: 'date' },
+  { key: 'date', name: 'Дата заключения', type: 'date' },
   { key: 'start-time', name: 'Время', type: 'string' },
   { key: 'marketplace', name: 'Торговая площадка', type: 'string' },
   { key: 'trading-mode', name: 'Режим торгов', type: 'string' },
@@ -23,7 +23,6 @@ const parameters: Parameter[] = [
   { key: 'total', name: 'Сумма сделки', type: 'number' },
   { key: 'payment-currency', name: 'Валюта расчетов', type: 'string' },
   { key: 'broker', name: 'Контрагент / Брокер', type: 'string' },
-  { key: 'end-date', name: 'Дата расчетов', type: 'date' },
 ];
 
 const parametersMap = new Map(parameters.map((p) => [p.name, p]));

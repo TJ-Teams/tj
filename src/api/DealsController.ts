@@ -30,8 +30,7 @@ export class DealsController extends BaseController {
 
   protected readonly defaultParameters: Parameter[] = [
     { key: 'name', name: 'Название компании', type: 'string' },
-    { key: 'start-date', name: 'Дата входа', type: 'date' },
-    { key: 'end-date', name: 'Дата выхода', type: 'date' },
+    { key: 'date', name: 'Дата операции', type: 'date' },
     { key: 'strategy', name: 'Стратегия', type: 'string' },
     { key: 'amount', name: 'Объем позиции', type: 'number' },
     { key: 'market', name: 'Рынок', type: 'string' },
@@ -70,8 +69,7 @@ export class MockDealsController extends DealsController {
     {
       id: uuidV4(),
       name: 'INTC',
-      'start-date': dayjs().format('M/DD/YY'),
-      'end-date': dayjs().format('M/DD/YY'),
+      date: dayjs().format('M/DD/YY'),
       strategy: 'Восходящий клин',
       amount: 200,
       market: 'Акции',
@@ -79,8 +77,7 @@ export class MockDealsController extends DealsController {
     {
       id: uuidV4(),
       name: 'BTC',
-      'start-date': dayjs().format('M/DD/YY'),
-      'end-date': dayjs().format('M/DD/YY'),
+      date: dayjs().format('M/DD/YY'),
       strategy: 'Молот',
       amount: 300,
       market: 'Криптовалюта',
