@@ -21,7 +21,7 @@ export class DealsController extends BaseController {
       deals: Object.fromEntries(deals.map((deal) => [deal.id, deal])),
     };
 
-    await this.put<void, DealsDto>('/api/data/add', data);
+    await this.put<void, DealsDto>('/api/data/set', data);
   }
 
   async resetDeals(): Promise<void> {
