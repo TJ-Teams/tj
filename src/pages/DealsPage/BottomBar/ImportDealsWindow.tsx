@@ -14,10 +14,12 @@ import Window, { WindowProps } from '~/components/Window';
 import { Deal, Parameter } from '~/types/deals';
 import importTinkoffDeals from '~/utils/import-tinkoff-deals';
 import importTjDeals from '~/utils/import-tj-deals';
+import importInteractiveDeals from '~/utils/import-interactive-deals';
 import { useDealsContext } from '../deals-context';
 
 enum ProviderType {
   Tinkoff,
+  InteractiveBrokers,
   TradersJournal,
 }
 
@@ -156,7 +158,7 @@ const ProviderButton = ({ imageSrc, name, onClick }: ProviderButtonProps) => (
 const providers: Record<ProviderType, Provider> = {
   [ProviderType.Tinkoff]: {
     type: ProviderType.Tinkoff,
-    name: 'Тинькофф',
+    name: 'Tinkoff',
     imageSrc: '/images/tinkoff.png',
     acceptFiles: {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [
@@ -164,6 +166,13 @@ const providers: Record<ProviderType, Provider> = {
       ],
     },
     importDeals: importTinkoffDeals,
+  },
+  [ProviderType.InteractiveBrokers]: {
+    type: ProviderType.InteractiveBrokers,
+    name: 'Interactive Brokers',
+    imageSrc: '/images/interactive-brokers.png',
+    acceptFiles: { 'text/csv': ['.csv'] },
+    importDeals: importInteractiveDeals,
   },
   [ProviderType.TradersJournal]: {
     type: ProviderType.TradersJournal,

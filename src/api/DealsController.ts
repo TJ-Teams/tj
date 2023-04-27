@@ -33,7 +33,7 @@ export class DealsController extends BaseController {
     { key: 'date', name: 'Дата операции', type: 'date' },
     { key: 'strategy', name: 'Стратегия', type: 'string' },
     { key: 'amount', name: 'Объем позиции', type: 'number' },
-    { key: 'market', name: 'Рынок', type: 'string' },
+    { key: 'mart', name: 'Рынок', type: 'string' },
   ];
 }
 

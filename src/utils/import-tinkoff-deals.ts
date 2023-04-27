@@ -12,7 +12,7 @@ const endString =
 
 const parameters: Parameter[] = [
   { key: 'date', name: 'Дата заключения', type: 'date' },
-  { key: 'start-time', name: 'Время', type: 'string' },
+  { key: 'time', name: 'Время', type: 'string' },
   { key: 'marketplace', name: 'Торговая площадка', type: 'string' },
   { key: 'trading-mode', name: 'Режим торгов', type: 'string' },
   { key: 'deal-type', name: 'Вид сделки', type: 'string' },
