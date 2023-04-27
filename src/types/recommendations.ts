@@ -7,7 +7,3 @@ export type Recommendation = {
   analyticsCountPlus: number;
   analyticsCountMinus: number;
 };
-
-export type RecommendationsResponse = {
-  data: Recommendation[];
-};

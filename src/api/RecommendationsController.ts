@@ -1,7 +1,5 @@
-import {
-  Recommendation,
-  RecommendationsResponse,
-} from '~/types/recommendations';
+import { Recommendation } from '~/types/recommendations';
+import snakeToCamel from '~/utils/snake-to-camel';
 import BaseController from './BaseController';
 
 export class RecommendationsController extends BaseController {
@@ -10,8 +8,13 @@ export class RecommendationsController extends BaseController {
     endData: Date
   ): Promise<Recommendation[]> {
     try {
-      const response = await this.get<RecommendationsResponse>('/api/rec/get');
-      return response.data;
+      const data = await this.get<Recommendation[]>('/api/rec/get');
+      const normalizedData = data.map((r) =>
+        Object.fromEntries(
+          Object.entries(r).map(([key, value]) => [snakeToCamel(key), value])
+        )
+      ) as Recommendation[];
+      return normalizedData;
     } catch (error) {
       console.warn(error);
       return [];
