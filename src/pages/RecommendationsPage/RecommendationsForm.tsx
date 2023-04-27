@@ -26,8 +26,8 @@ const RecommendationsForm = ({
   const [isValid, setIsValid] = useState(
     Boolean(defaultStartDate && defaultEndDate)
   );
-  const startDate = useValue<Date | undefined>(undefined);
-  const endDate = useValue<Date | undefined>(undefined);
+  const startDate = useValue(defaultStartDate);
+  const endDate = useValue(defaultEndDate);
 
   const handleDateRangeChange = (start?: Date, end?: Date) => {
     startDate.set(start);
