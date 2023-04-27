@@ -19,7 +19,7 @@ const columns: Record<keyof TopData, string> = {
   name: 'Параметры',
   accuracy: 'Точность (%)',
   profitability: 'Доходность (руб)',
-  percentageProfitability: 'Доходность (%)',
+  // percentageProfitability: 'Доходность (%)',
 };
 
 const RecommendationsTable = ({ data, ...props }: Props) => (
@@ -30,13 +30,14 @@ const RecommendationsTable = ({ data, ...props }: Props) => (
       children="Оценка всех торговых стратегий"
     />
     <Grid
-      gridTemplateColumns="repeat(4, 1fr)"
+      gridTemplateColumns="repeat(3, 1fr)"
       border="1px solid #B9B9B9"
       borderRadius={8}
       overflow="hidden"
     >
       {Object.values(columns).map((name, i) => (
         <Cell
+          key={i}
           bg="#F3E4FF"
           fontWeight="600"
           borderLeft={i === 0 ? 'none' : '1px solid #B9B9B9'}
@@ -49,6 +50,7 @@ const RecommendationsTable = ({ data, ...props }: Props) => (
             const value = d[key as keyof TopData];
             return (
               <Cell
+                key={j}
                 borderLeft={j === 0 ? 'none' : '1px solid #B9B9B9'}
                 bg={i % 2 === 1 ? 'neutral.2' : 'neutral.1'}
                 children={

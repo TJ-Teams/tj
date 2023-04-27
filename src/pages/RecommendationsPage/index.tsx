@@ -60,7 +60,7 @@ const RecommendationsPage = () => {
         </HStack>
       )}
       {hasDate && (
-        <RecommendationsTable mt="70px" w="85vw" data={topInAccuracy} />
+        <RecommendationsTable mt="70px" w="65vw" data={topInAccuracy} />
       )}
     </Flex>
   );
@@ -88,16 +88,16 @@ const calculateTopData = (recommendations: Recommendation[]): TopData[] => {
     .map<TopData>((r) => {
       totalProfitability += r.analyticsSum;
       return {
-        name: `${r.name}, ${r.marketplace}, ${r.tradingMode}, ${r.broker}`,
+        name: `${r.marketplace}, ${r.tradingMode}, ${r.broker}`,
         accuracy: calculateAccuracy(r),
         profitability: r.analyticsSum,
-        percentageProfitability: 0,
+        // percentageProfitability: 0,
       };
     })
-    .map((d) => ({
-      ...d,
-      percentageProfitability: (d.profitability / totalProfitability) * 100,
-    }))
+    // .map((d) => ({
+    //   ...d,
+    //   percentageProfitability: (d.profitability / totalProfitability) * 100,
+    // }))
     .sort((a, b) => b.accuracy - a.accuracy);
 
   return topData;
