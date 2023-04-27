@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext } from 'react';
 import api from '~/api';
+import PageLoader from '~/components/PageLoader';
 import { useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
@@ -77,7 +78,7 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
         chosenParameterKeys,
         parametersMap: parametersMap.get,
       }}
-      children={isLoading ? null : children}
+      children={isLoading ? <PageLoader /> : children}
     />
   );
 };

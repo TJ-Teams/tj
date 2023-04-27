@@ -2,7 +2,8 @@ import { Flex, HStack } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import api from '~/api';
-import { useValue } from '~/hooks';
+import PageLoader from '~/components/PageLoader';
+import { useLoadingState, useValue } from '~/hooks';
 import { Recommendation } from '~/types/recommendations';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import RatingTable from './RatingTable';
@@ -14,6 +15,8 @@ const startDateKey = 'recommendations:start-date';
 const endDateKey = 'recommendations:end-date';
 
 const RecommendationsPage = () => {
+  const { isLoading, trackLoading } = useLoadingState(false);
+
   const startDate = useValue(getDateFromStorage(startDateKey), {
     onUpdate: saveDateToStorage(startDateKey),
   });
@@ -22,30 +25,38 @@ const RecommendationsPage = () => {
   });
   const [topInAccuracy, setTopInAccuracy] = useState<TopData[]>([]);
 
-  const handleLoad = async (start: Date, end: Date) => {
-    startDate.set(start);
-    endDate.set(end);
-    const data = await api.recommendations.getRecommendations(start, end);
+  const handleLoad = (start: Date, end: Date) =>
+    trackLoading(async () => {
+      startDate.set(start);
+      endDate.set(end);
+      const data = await api.recommendations.getRecommendations(start, end);
 
-    setTopInAccuracy(calculateTopData(data));
-  };
+      setTopInAccuracy(calculateTopData(data));
+    })();
 
   useEffect(() => {
     if (!startDate.get || !endDate.get) return;
     handleLoad(startDate.get, endDate.get);
   }, []);
 
-  const hasDate = Boolean(startDate.get && endDate.get);
+  const hasData = !isLoading && Boolean(startDate.get && endDate.get);
 
   return (
-    <Flex py="36px" align="center" flexDir="column" whiteSpace="break-spaces">
+    <Flex
+      flex={1}
+      py="36px"
+      align="center"
+      flexDir="column"
+      whiteSpace="break-spaces"
+    >
       <RecommendationsForm
+        isLoading={isLoading}
         defaultStartDate={startDate.get}
         defaultEndDate={endDate.get}
         w="min(700px, 95%)"
         onSubmit={handleLoad}
       />
-      {hasDate && (
+      {hasData && (
         <HStack mt="36px" w="80vw" spacing="70px" align="flex-start">
           <RatingTable
             title="Лучшие стратегии"
@@ -59,9 +70,10 @@ const RecommendationsPage = () => {
           />
         </HStack>
       )}
-      {hasDate && (
+      {hasData && (
         <RecommendationsTable mt="70px" w="65vw" data={topInAccuracy} />
       )}
+      {isLoading && <PageLoader />}
     </Flex>
   );
 };

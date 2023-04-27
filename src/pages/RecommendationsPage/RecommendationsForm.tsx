@@ -7,15 +7,17 @@ import {
 } from '@chakra-ui/react';
 import { memo, useState } from 'react';
 import SelectDataRange from '~/components/SelectDataRange';
-import { useLoadingState, useValue } from '~/hooks';
+import { useValue } from '~/hooks';
 
 type Props = {
+  isLoading?: boolean;
   defaultStartDate?: Date;
   defaultEndDate?: Date;
   onSubmit?: (startDate: Date, endDate: Date) => Promise<void>;
 } & Omit<StackProps, 'onSubmit'>;
 
 const RecommendationsForm = ({
+  isLoading,
   defaultStartDate,
   defaultEndDate,
   onSubmit,
@@ -24,7 +26,6 @@ const RecommendationsForm = ({
   const [isValid, setIsValid] = useState(
     Boolean(defaultStartDate && defaultEndDate)
   );
-  const { isLoading, trackLoading } = useLoadingState(false);
   const startDate = useValue<Date | undefined>(undefined);
   const endDate = useValue<Date | undefined>(undefined);
 
@@ -34,11 +35,10 @@ const RecommendationsForm = ({
     setIsValid(Boolean(start && end));
   };
 
-  const handleSubmit = trackLoading(async () => {
+  const handleSubmit = async () => {
     if (!startDate.get || !endDate.get) return;
-
     await onSubmit?.(startDate.get, endDate.get);
-  });
+  };
 
   return (
     <HStack {...props}>
@@ -49,8 +49,7 @@ const RecommendationsForm = ({
       />
       <Spacer />
       <Button
-        isDisabled={!isValid}
-        isLoading={isLoading}
+        isDisabled={!isValid || isLoading}
         onClick={handleSubmit}
         children="Получить рекомендации"
       />
@@ -73,4 +72,6 @@ const Button = (props: ButtonProps) => (
   />
 );
 
-export default memo(RecommendationsForm, () => true);
+export default memo(RecommendationsForm, (prev, next) => {
+  return prev.isLoading === next.isLoading;
+});

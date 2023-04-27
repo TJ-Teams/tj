@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useCallback, useContext } from 'react';
 import api from '~/api';
+import PageLoader from '~/components/PageLoader';
 import { useDebounce, useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
@@ -78,7 +79,7 @@ export const DealsProvider = ({ children }: DealsProviderProps) => {
   return (
     <DealsContext.Provider
       value={{ subscriptions, deals, parameters, refetch }}
-      children={isLoading ? null : children}
+      children={isLoading ? <PageLoader /> : children}
     />
   );
 };
