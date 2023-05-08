@@ -15,7 +15,12 @@ type Props = {
 } & ChartLayoutProps;
 
 const PieChart = ({ title, subTitle, data, onRemove }: Props) => (
-  <ChartLayout title={title} subTitle={subTitle} onRemove={onRemove}>
+  <ChartLayout
+    title={title}
+    subTitle={subTitle}
+    isEmpty={data.length === 0}
+    onRemove={onRemove}
+  >
     <RPieChart>
       <Pie
         data={data}
@@ -65,10 +70,10 @@ const renderCustomizedLabel: PieLabel<PieLabelRenderProps> = ({
       />
       <text
         x={ex + (cos < 0 ? 1 : -1) * 35}
-        y={ey - 8}
+        y={ey - 4}
         textAnchor={textAnchor}
         fill="black"
-        children={`${(percent * 100).toFixed(0)}%`}
+        children={`${+(percent * 100).toFixed(1)}%`}
       />
     </g>
   );

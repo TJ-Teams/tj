@@ -1,4 +1,4 @@
-import { Box, Heading, HStack, Text } from '@chakra-ui/react';
+import { Box, Center, Heading, HStack, Text } from '@chakra-ui/react';
 import { ReactElement, useRef } from 'react';
 import { ResponsiveContainer } from 'recharts';
 import BaseRemoveButton from '~/components/RemoveButton';
@@ -6,6 +6,7 @@ import BaseRemoveButton from '~/components/RemoveButton';
 export type ChartLayoutProps = {
   title: string;
   subTitle: string;
+  isEmpty?: boolean;
   onRemove?: () => void;
 };
 
@@ -16,6 +17,7 @@ type Props = {
 const ChartLayout = ({
   title,
   subTitle,
+  isEmpty,
   onRemove,
   children,
 }: ChartLayoutProps & Props) => {
@@ -67,7 +69,13 @@ const ChartLayout = ({
           onRemove={handleRemove}
         />
       )}
-      <ResponsiveContainer width="100%" height="100%" children={children} />
+      {isEmpty ? (
+        <Center boxSize="full">
+          <Text children="Нет данных" />
+        </Center>
+      ) : (
+        <ResponsiveContainer width="100%" height="100%" children={children} />
+      )}
     </Box>
   );
 };

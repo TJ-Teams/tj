@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { FiChevronDown } from 'react-icons/fi';
 import { RiSettings3Fill } from 'react-icons/ri';
-import { Chart, getChartKey } from '../chart-type';
+import { Chart, getChartKey } from '../types';
 import { useStatsContext } from '../stats-context';
 import AddChartsForm from './AddChartsForm';
 

@@ -5,8 +5,9 @@ import { useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
 import { Parameter } from '~/types/deals';
+import { Statistics } from '~/types/statistics';
 import safelyLocalStorage from '~/utils/safely-local-storage';
-import { Chart } from './chart-type';
+import { Chart } from './types';
 
 type SubscribeKey = 'charts' | 'chosen-parameters';
 
@@ -15,6 +16,7 @@ type StatsContent = {
   charts: ValueRef<Chart[]>;
   chosenParameterKeys: ValueRef<string[]>;
   parametersMap: Map<string, Parameter>;
+  statistics: Statistics;
 };
 
 type StatsProviderProps = {
@@ -26,6 +28,7 @@ const DealsContext = createContext<StatsContent>({
   charts: { get: [], set: () => {} },
   chosenParameterKeys: { get: [], set: () => {} },
   parametersMap: new Map(),
+  statistics: {},
 });
 
 export const useStatsContext = (): StatsContent => useContext(DealsContext);
@@ -45,25 +48,28 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
     onUpdate: (d) => safelyLocalStorage.setJson(paramsStorageKey, d),
   });
   const parametersMap = useValue(new Map<string, Parameter>());
+  const statistics = useValue<Statistics>({});
 
   useMethodAfterMount(
     async () => {
       const [parameters] = await api.deals.getDeals();
+      const statistics = await api.statistics.getStatistics();
       const charts = safelyLocalStorage.getJsonOrElse<Chart[]>(
         chartsStorageKey,
         []
       );
       const chosenParams = safelyLocalStorage.getJsonOrElse<string[]>(
         paramsStorageKey,
-        ['name', 'deal-type']
+        ['broker', 'marketplace', 'trading-mode']
       );
-      return [parameters, charts, chosenParams] as const;
+      return [parameters, statistics, charts, chosenParams] as const;
     },
     {
       onStartLoading: setIsLoading.on,
       onEndLoading: setIsLoading.off,
-      next: ([loadedParams, loadedCharts, loadedChosenParams]) => {
+      next: ([loadedParams, loadedStats, loadedCharts, loadedChosenParams]) => {
         parametersMap.set(new Map(loadedParams.map((p) => [p.key, p])));
+        statistics.set(loadedStats);
         charts.set(loadedCharts, true);
         chosenParameterKeys.set(loadedChosenParams, true);
       },
@@ -77,6 +83,7 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
         charts,
         chosenParameterKeys,
         parametersMap: parametersMap.get,
+        statistics: statistics.get,
       }}
       children={isLoading ? <PageLoader /> : children}
     />

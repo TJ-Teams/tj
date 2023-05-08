@@ -11,9 +11,10 @@ import {
 } from '@chakra-ui/react';
 import { ChangeEvent, Fragment, useState } from 'react';
 import { useForceUpdate, useValue } from '~/hooks';
-import { Chart, ChartType, chartTypes } from '../chart-type';
+import { Chart, chartLabels } from '../types';
 import { useStatsContext } from '../stats-context';
 import SelectDataRange from '../../../components/SelectDataRange';
+import { StatisticsType } from '~/types/statistics';
 
 type Props = {
   onSubmit?: (charts: Chart[]) => void;
@@ -25,7 +26,7 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
     useStatsContext();
   const dateRange = useValue<{ startDate?: Date; endDate?: Date }>({});
   const chosenCharts = useValue(
-    new Map<string, { parameterKey: string; chartType: ChartType }>()
+    new Map<string, { parameterKey: string; chartType: StatisticsType }>()
   );
   const [isValid, setIsValid] = useState(false);
 
@@ -37,7 +38,7 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
   };
 
   const handleChooseChart =
-    (parameterKey: string, chartType: ChartType) =>
+    (parameterKey: string, chartType: StatisticsType) =>
     (e: ChangeEvent<HTMLInputElement>) => {
       const isChosen = e.currentTarget.checked;
       const key = `${parameterKey}:${chartType}`;
@@ -83,7 +84,7 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
         alignItems="center"
       >
         <Spacer />
-        {Object.values(chartTypes).map(({ label }, i) => (
+        {Object.values(chartLabels).map(({ label }, i) => (
           <Text justifySelf="center" key={i} children={label} />
         ))}
         {chosenParameterKeys.get.map((key) => {
@@ -92,11 +93,11 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
           return (
             <Fragment key={key}>
               <Text children={parameter.name} />
-              {Object.keys(chartTypes).map((type) => (
+              {Object.keys(chartLabels).map((type) => (
                 <Checkbox
                   key={type}
                   justifySelf="center"
-                  onChange={handleChooseChart(key, type as ChartType)}
+                  onChange={handleChooseChart(key, type as StatisticsType)}
                 />
               ))}
             </Fragment>

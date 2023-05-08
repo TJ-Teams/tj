@@ -1,15 +1,14 @@
 import dayjs from 'dayjs';
-
-export type ChartType = 'volume' | 'accuracy' | 'profitability';
+import { StatisticsType } from '~/types/statistics';
 
 export type Chart = {
   parameterKey: string;
-  type: ChartType;
+  type: StatisticsType;
   startDate: Date;
   endDate: Date;
 };
 
-export const chartTypes: Record<ChartType, { label: string }> = {
+export const chartLabels: Record<StatisticsType, { label: string }> = {
   volume: { label: 'Объем' },
   accuracy: { label: 'Точность' },
   profitability: { label: 'Доходность' },

@@ -26,6 +26,7 @@
     "react-router-dom": "^6.9.0",
     "react-spinners": "^0.13.8",
     "recharts": "^2.5.0",
+    "string-to-color": "^2.2.2",
     "uuid": "^9.0.0",
     "xlsx": "^0.18.5",
     "yup": "^0.32.11"
