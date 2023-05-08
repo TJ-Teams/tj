@@ -3,10 +3,12 @@ import {
   MockRecommendationsController,
   RecommendationsController,
 } from './RecommendationsController';
+import { StatisticsController } from './StatisticsController';
 
 type Api = {
   deals: DealsController;
   recommendations: RecommendationsController;
+  statistics: StatisticsController;
 };
 
 const api: Api = {
@@ -16,6 +18,7 @@ const api: Api = {
   recommendations: import.meta.env.VITE_OFFLINE
     ? new MockRecommendationsController()
     : new RecommendationsController(),
+  statistics: new StatisticsController(),
 };
 
 export default api;
