@@ -11,17 +11,11 @@ import {
 import { useState } from 'react';
 import Dropzone from '~/components/Dropzone';
 import Window, { WindowProps } from '~/components/Window';
-import { Deal, Parameter } from '~/types/deals';
+import { Deal, Parameter, ProviderType } from '~/types/deals';
 import importTinkoffDeals from '~/utils/import-tinkoff-deals';
 import importTjDeals from '~/utils/import-tj-deals';
 import importInteractiveDeals from '~/utils/import-interactive-deals';
 import { useDealsContext } from '../deals-context';
-
-enum ProviderType {
-  Tinkoff,
-  InteractiveBrokers,
-  TradersJournal,
-}
 
 type Provider = {
   type: ProviderType;

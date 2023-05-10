@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { v4 as uuidV4 } from 'uuid';
-import { Deal, DealsDto, Parameter } from '~/types/deals';
+import { Deal, DealsDto, Parameter, ProviderType } from '~/types/deals';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import BaseController from './BaseController';
 
@@ -83,6 +83,7 @@ export class MockDealsController extends DealsController {
   private readonly defaultDeals: Deal[] = [
     {
       id: uuidV4(),
+      'provider-type': ProviderType.TradersJournal,
       name: 'INTC',
       date: dayjs().format('M/DD/YY'),
       strategy: 'Восходящий клин',
@@ -91,6 +92,7 @@ export class MockDealsController extends DealsController {
     },
     {
       id: uuidV4(),
+      'provider-type': ProviderType.TradersJournal,
       name: 'BTC',
       date: dayjs().format('M/DD/YY'),
       strategy: 'Молот',

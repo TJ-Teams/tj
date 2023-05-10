@@ -5,8 +5,15 @@ export type Parameter = {
   isCustom?: boolean;
 };
 
+export enum ProviderType {
+  Tinkoff = 'Tinkoff',
+  InteractiveBrokers = 'IB',
+  TradersJournal = 'TJ',
+}
+
 export type Deal = {
   id: string;
+  'provider-type': ProviderType;
   [key: string]: number | string | Date | undefined;
 };
 

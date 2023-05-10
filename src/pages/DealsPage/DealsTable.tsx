@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as rdg from 'react-datasheet-grid';
 import { v4 as uuidV4 } from 'uuid';
-import { Deal, Parameter, TypeParameter } from '~/types/deals';
+import { Deal, Parameter, ProviderType, TypeParameter } from '~/types/deals';
 import BottomBar from './BottomBar';
 import { useDealsContext } from './deals-context';
 
@@ -82,7 +82,10 @@ const getColumnByType = (type: TypeParameter) => {
   }
 };
 
-const createRow = () => ({ id: uuidV4() });
+const createRow = () => ({
+  id: uuidV4(),
+  'provider-type': ProviderType.TradersJournal,
+});
 
 const duplicateRow = (opts: { rowData: Deal; rowIndex: number }): Deal => ({
   ...opts.rowData,

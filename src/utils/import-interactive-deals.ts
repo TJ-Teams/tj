@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { v4 as uuidV4 } from 'uuid';
 import * as xlsx from 'xlsx';
-import { Deal, Parameter, TypeParameter } from '~/types/deals';
+import { Deal, Parameter, ProviderType, TypeParameter } from '~/types/deals';
 import { isDefined } from './is-defined';
 
 const headerLine = 'Сделки,Header';
@@ -96,7 +96,11 @@ const toDeal = (object: Record<string, string>): Deal => {
       })
       .filter(isDefined)
   );
-  return { ...deal, id: uuidV4() };
+  return {
+    ...deal,
+    id: uuidV4(),
+    'provider-type': ProviderType.InteractiveBrokers,
+  };
 };
 
 const importInteractiveDeals = async (
