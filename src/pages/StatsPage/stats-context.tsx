@@ -16,7 +16,6 @@ type StatsContent = {
   charts: ValueRef<Chart[]>;
   chosenParameterKeys: ValueRef<string[]>;
   parametersMap: Map<string, Parameter>;
-  statistics: Statistics;
 };
 
 type StatsProviderProps = {
@@ -28,7 +27,6 @@ const DealsContext = createContext<StatsContent>({
   charts: { get: [], set: () => {} },
   chosenParameterKeys: { get: [], set: () => {} },
   parametersMap: new Map(),
-  statistics: {},
 });
 
 export const useStatsContext = (): StatsContent => useContext(DealsContext);
@@ -48,12 +46,10 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
     onUpdate: (d) => safelyLocalStorage.setJson(paramsStorageKey, d),
   });
   const parametersMap = useValue(new Map<string, Parameter>());
-  const statistics = useValue<Statistics>({});
 
   useMethodAfterMount(
     async () => {
-      const [parameters] = await api.deals.getDeals();
-      const statistics = await api.statistics.getStatistics();
+      const parameters = await api.deals.getParameters();
       const charts = safelyLocalStorage.getJsonOrElse<Chart[]>(
         chartsStorageKey,
         []
@@ -62,14 +58,13 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
         paramsStorageKey,
         ['broker', 'marketplace', 'trading-mode']
       );
-      return [parameters, statistics, charts, chosenParams] as const;
+      return [parameters, charts, chosenParams] as const;
     },
     {
       onStartLoading: setIsLoading.on,
       onEndLoading: setIsLoading.off,
-      next: ([loadedParams, loadedStats, loadedCharts, loadedChosenParams]) => {
+      next: ([loadedParams, loadedCharts, loadedChosenParams]) => {
         parametersMap.set(new Map(loadedParams.map((p) => [p.key, p])));
-        statistics.set(loadedStats);
         charts.set(loadedCharts, true);
         chosenParameterKeys.set(loadedChosenParams, true);
       },
@@ -83,7 +78,6 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
         charts,
         chosenParameterKeys,
         parametersMap: parametersMap.get,
-        statistics: statistics.get,
       }}
       children={isLoading ? <PageLoader /> : children}
     />

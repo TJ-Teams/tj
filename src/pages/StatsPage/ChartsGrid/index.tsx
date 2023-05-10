@@ -6,11 +6,11 @@ import { useStatsContext } from '../stats-context';
 import BarChart from './BarChart';
 import PieChart from './PieChart';
 import stc from 'string-to-color';
+import api from '~/api';
 
 const ChartsGrid = () => {
   const forceUpdate = useForceUpdate();
-  const { statistics, charts, parametersMap, subscriptions } =
-    useStatsContext();
+  const { charts, parametersMap, subscriptions } = useStatsContext();
 
   subscriptions.useSubscribe('charts', forceUpdate);
 
@@ -33,18 +33,26 @@ const ChartsGrid = () => {
         if (!title) return null;
         const Chart = chartComponent[c.type];
         const chartKey = getChartKey(c);
-        const chartData = statistics[c.parameterKey]?.map((v) => ({
-          name: v.name,
-          value: v[c.type],
-          color: stc(v.name),
-        }));
+        const loadData = async () => {
+          const stats = await api.statistics.getStatistics(
+            c.startDate,
+            c.endDate,
+            [c.parameterKey]
+          );
+          const chartData = stats[c.parameterKey]?.map((v) => ({
+            name: v.name,
+            value: v[c.type],
+            color: stc(v.name),
+          }));
+          return chartData || [];
+        };
         return (
           <Chart
             key={chartKey}
             chartKey={chartKey}
             title={title}
             subTitle={getChartSubtitle(c)}
-            data={chartData || []}
+            loadData={loadData}
             onRemove={handleChartRemove(chartKey)}
           />
         );

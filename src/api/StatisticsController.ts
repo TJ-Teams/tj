@@ -2,7 +2,11 @@ import { Statistics, StatisticsDto } from '~/types/statistics';
 import BaseController from './BaseController';
 
 export class StatisticsController extends BaseController {
-  async getStatistics(): Promise<Statistics> {
+  async getStatistics(
+    startDate: Date,
+    endDate: Date,
+    parameterKeys: string[]
+  ): Promise<Statistics> {
     const data = await this.get<StatisticsDto>('/api/stat/get');
 
     const normalizedData = Object.fromEntries(

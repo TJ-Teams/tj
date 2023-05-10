@@ -5,7 +5,8 @@ import BaseController from './BaseController';
 export class RecommendationsController extends BaseController {
   async getRecommendations(
     startDate: Date,
-    endData: Date
+    endDate: Date,
+    parameterKeys: string[]
   ): Promise<Recommendation[]> {
     try {
       const data = await this.get<Recommendation[]>('/api/rec/get');
@@ -25,7 +26,8 @@ export class RecommendationsController extends BaseController {
 export class MockRecommendationsController extends RecommendationsController {
   override async getRecommendations(
     startDate: Date,
-    endData: Date
+    endDate: Date,
+    parameterKeys: string[]
   ): Promise<Recommendation[]> {
     return this.mockData;
   }

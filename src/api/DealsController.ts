@@ -15,6 +15,12 @@ export class DealsController extends BaseController {
     return [parameters, deals];
   }
 
+  async getParameters(): Promise<Parameter[]> {
+    const parameters = await this.get<Parameter[]>('/api/data_parameters/get');
+
+    return parameters.length > 0 ? parameters : this.defaultParameters;
+  }
+
   async updateDeals(parameters: Parameter[], deals: Deal[]): Promise<void> {
     const data: DealsDto = {
       parameters,
@@ -49,6 +55,15 @@ export class MockDealsController extends DealsController {
     );
 
     return [parameters, deals];
+  }
+
+  override async getParameters(): Promise<Parameter[]> {
+    const parameters = safelyLocalStorage.getJsonOrElse(
+      this.parametersKey,
+      this.defaultParameters
+    );
+
+    return parameters;
   }
 
   override async updateDeals(

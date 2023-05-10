@@ -7,40 +7,54 @@ import {
   PieLabel,
   PieLabelRenderProps,
 } from 'recharts';
+import { useLoadingState, useMethodAfterMount, useValue } from '~/hooks';
 import ChartLayout, { ChartLayoutProps } from './ChartLayout';
+import { ChartData } from './types';
 
 type Props = {
   chartKey: string;
-  data: { name: string; value: number; color: string }[];
+  loadData: () => Promise<ChartData[]>;
 } & ChartLayoutProps;
 
-const PieChart = ({ title, subTitle, data, onRemove }: Props) => (
-  <ChartLayout
-    title={title}
-    subTitle={subTitle}
-    isEmpty={data.length === 0}
-    onRemove={onRemove}
-  >
-    <RPieChart>
-      <Pie
-        data={data}
-        dataKey="value"
-        innerRadius="35%"
-        labelLine={false}
-        label={renderCustomizedLabel}
-        children={data.map((item, index) => (
-          <Cell key={index} fill={item.color} />
-        ))}
-      />
-      <Legend
-        iconType="circle"
-        layout="vertical"
-        align="right"
-        verticalAlign="middle"
-      />
-    </RPieChart>
-  </ChartLayout>
-);
+const PieChart = ({ title, subTitle, loadData, onRemove }: Props) => {
+  const data = useValue<ChartData[]>([]);
+  const { isLoading, setIsLoading } = useLoadingState(true);
+
+  useMethodAfterMount(loadData, {
+    onStartLoading: setIsLoading.on,
+    onEndLoading: setIsLoading.off,
+    next: data.set,
+  });
+
+  return (
+    <ChartLayout
+      title={title}
+      subTitle={subTitle}
+      isLoading={isLoading}
+      isEmpty={data.get.length === 0}
+      onRemove={onRemove}
+    >
+      <RPieChart>
+        <Pie
+          data={data.get}
+          dataKey="value"
+          innerRadius="35%"
+          labelLine={false}
+          label={renderCustomizedLabel}
+          children={data.get.map((item, index) => (
+            <Cell key={index} fill={item.color} />
+          ))}
+        />
+        <Legend
+          iconType="circle"
+          layout="vertical"
+          align="right"
+          verticalAlign="middle"
+        />
+      </RPieChart>
+    </ChartLayout>
+  );
+};
 
 const renderCustomizedLabel: PieLabel<PieLabelRenderProps> = ({
   cx = 0,

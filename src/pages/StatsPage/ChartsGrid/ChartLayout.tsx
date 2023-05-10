@@ -1,11 +1,13 @@
 import { Box, Center, Heading, HStack, Text } from '@chakra-ui/react';
 import { ReactElement, useRef } from 'react';
+import PuffLoader from 'react-spinners/PuffLoader';
 import { ResponsiveContainer } from 'recharts';
 import BaseRemoveButton from '~/components/RemoveButton';
 
 export type ChartLayoutProps = {
   title: string;
   subTitle: string;
+  isLoading?: boolean;
   isEmpty?: boolean;
   onRemove?: () => void;
 };
@@ -17,6 +19,7 @@ type Props = {
 const ChartLayout = ({
   title,
   subTitle,
+  isLoading,
   isEmpty,
   onRemove,
   children,
@@ -69,7 +72,12 @@ const ChartLayout = ({
           onRemove={handleRemove}
         />
       )}
-      {isEmpty ? (
+      {isLoading ? (
+        <Center boxSize="full" flexDir="column">
+          <PuffLoader color='#852AD3' />
+          <Text mt={4} children="Загрузка..." />
+        </Center>
+      ) : isEmpty ? (
         <Center boxSize="full">
           <Text children="Нет данных" />
         </Center>

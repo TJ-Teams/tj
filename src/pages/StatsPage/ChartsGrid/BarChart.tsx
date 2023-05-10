@@ -9,48 +9,62 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { useLoadingState, useMethodAfterMount, useValue } from '~/hooks';
 import ChartLayout, { ChartLayoutProps } from './ChartLayout';
+import { ChartData } from './types';
 
 type Props = {
   chartKey: string;
-  data: { name: string; value: number; color: string }[];
+  loadData: () => Promise<ChartData[]>;
 } & ChartLayoutProps;
 
-const BarChart = ({ title, subTitle, data, onRemove }: Props) => (
-  <ChartLayout
-    title={title}
-    subTitle={subTitle}
-    isEmpty={data.length === 0}
-    onRemove={onRemove}
-  >
-    <RBarChart data={data} maxBarSize={55}>
-      <CartesianGrid
-        strokeDasharray="4"
-        verticalCoordinatesGenerator={(props) => {
-          const range = props.offset?.width / data.length;
-          return data.map((_, i) => props.offset?.left + range * (i + 1));
-        }}
-      />
-      <XAxis dataKey="name" />
-      <YAxis
-        type="number"
-        tickFormatter={tickFormatter}
-        domain={[(min: number) => (min < 0 ? min * 1.1 : min), 'auto']}
-      />
-      <ReferenceLine y={0} stroke="rgb(102, 102, 102)" />
-      <Bar dataKey="value">
-        <LabelList
-          fill="black"
-          position="top"
-          valueAccessor={(e: { value: number }) => +e.value.toFixed(1)}
+const BarChart = ({ title, subTitle, loadData, onRemove }: Props) => {
+  const data = useValue<ChartData[]>([]);
+  const { isLoading, setIsLoading } = useLoadingState(true);
+
+  useMethodAfterMount(loadData, {
+    onStartLoading: setIsLoading.on,
+    onEndLoading: setIsLoading.off,
+    next: data.set,
+  });
+
+  return (
+    <ChartLayout
+      title={title}
+      subTitle={subTitle}
+      isLoading={isLoading}
+      isEmpty={data.get.length === 0}
+      onRemove={onRemove}
+    >
+      <RBarChart data={data.get} maxBarSize={55}>
+        <CartesianGrid
+          strokeDasharray="4"
+          verticalCoordinatesGenerator={(props) => {
+            const range = props.offset?.width / data.get.length;
+            return data.get.map((_, i) => props.offset?.left + range * (i + 1));
+          }}
         />
-        {data.map((item, index) => (
-          <Cell key={index} fill={item.color} />
-        ))}
-      </Bar>
-    </RBarChart>
-  </ChartLayout>
-);
+        <XAxis dataKey="name" />
+        <YAxis
+          type="number"
+          tickFormatter={tickFormatter}
+          domain={[(min: number) => (min < 0 ? min * 1.1 : min), 'auto']}
+        />
+        <ReferenceLine y={0} stroke="rgb(102, 102, 102)" />
+        <Bar dataKey="value">
+          <LabelList
+            fill="black"
+            position="top"
+            valueAccessor={(e: { value: number }) => +e.value.toFixed(1)}
+          />
+          {data.get.map((item, index) => (
+            <Cell key={index} fill={item.color} />
+          ))}
+        </Bar>
+      </RBarChart>
+    </ChartLayout>
+  );
+};
 
 const tickFormatter = (num: number) => {
   return Math.abs(num) > 999

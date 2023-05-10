@@ -29,7 +29,7 @@ const RecommendationsPage = () => {
     trackLoading(async () => {
       startDate.set(start);
       endDate.set(end);
-      const data = await api.recommendations.getRecommendations(start, end);
+      const data = await api.recommendations.getRecommendations(start, end, []);
 
       setTopInAccuracy(calculateTopData(data));
     })();
