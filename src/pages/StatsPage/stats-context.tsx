@@ -5,7 +5,6 @@ import { useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
 import { Parameter } from '~/types/deals';
-import { Statistics } from '~/types/statistics';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import { Chart } from './types';
 
@@ -56,7 +55,10 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
       );
       const chosenParams = safelyLocalStorage.getJsonOrElse<string[]>(
         paramsStorageKey,
-        ['broker', 'marketplace', 'trading-mode']
+        parameters
+          .filter((p) => p.type === 'string')
+          .slice(0, 3)
+          .map((p) => p.key)
       );
       return [parameters, charts, chosenParams] as const;
     },

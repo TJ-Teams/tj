@@ -8,10 +8,10 @@ import {
   useBoolean,
 } from '@chakra-ui/react';
 import { FiChevronDown } from 'react-icons/fi';
-import { RiSettings3Fill } from 'react-icons/ri';
-import { Chart, getChartKey } from '../types';
 import { useStatsContext } from '../stats-context';
+import { Chart, getChartKey } from '../types';
 import AddChartsForm from './AddChartsForm';
+import SettingParametersButton from './SettingParametersButton';
 
 const AddChartsMenu = () => {
   const { charts, subscriptions } = useStatsContext();
@@ -55,13 +55,7 @@ const AddChartsMenu = () => {
             />
           }
         />
-        <Button
-          // TODO coming soon
-          isDisabled
-          opacity="0.3 !important"
-          children="Настройка кастомизации"
-          rightIcon={<Icon as={RiSettings3Fill} boxSize={6} />}
-        />
+        <SettingParametersButton />
       </HStack>
     </Box>
   );
