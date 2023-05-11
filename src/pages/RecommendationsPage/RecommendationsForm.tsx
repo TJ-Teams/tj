@@ -90,15 +90,17 @@ const RecommendationsForm = ({
     <Flex flexDir="column" {...props}>
       <Text fontWeight="bold" children="Параметры для анализа" />
       <Wrap mt={2} mb={6}>
-        {parameters.get.map((p) => (
-          <CheckboxButton
-            key={p.key}
-            isActive={parameterKeys.has(p.key)}
-            isDisabled={parameterKeys.size >= 5}
-            children={p.name}
-            onClick={handleChooseParameter(p.key)}
-          />
-        ))}
+        {parameters.get
+          .filter((p) => p.type === 'string')
+          .map((p) => (
+            <CheckboxButton
+              key={p.key}
+              isActive={parameterKeys.has(p.key)}
+              isDisabled={parameterKeys.size >= 5}
+              children={p.name}
+              onClick={handleChooseParameter(p.key)}
+            />
+          ))}
       </Wrap>
       <HStack>
         <SelectDataRange
