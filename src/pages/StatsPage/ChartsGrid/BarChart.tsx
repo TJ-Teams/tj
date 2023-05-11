@@ -6,6 +6,7 @@ import {
   Cell,
   LabelList,
   ReferenceLine,
+  Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
@@ -50,6 +51,7 @@ const BarChart = ({ title, subTitle, loadData, onRemove }: Props) => {
           tickFormatter={tickFormatter}
           domain={[(min: number) => (min < 0 ? min * 1.1 : min), 'auto']}
         />
+        <Tooltip formatter={(value) => +(+value).toFixed(1)} />
         <ReferenceLine y={0} stroke="rgb(102, 102, 102)" />
         <Bar dataKey="value">
           <LabelList

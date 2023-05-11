@@ -34,17 +34,21 @@ const ChartsGrid = () => {
         const Chart = chartComponent[c.type];
         const chartKey = getChartKey(c);
         const loadData = async () => {
-          const stats = await api.statistics.getStatistics(
-            c.startDate,
-            c.endDate,
-            [c.parameterKey]
-          );
-          const chartData = stats[c.parameterKey]?.map((v) => ({
-            name: v.name,
-            value: v[c.type],
-            color: stc(v.name),
-          }));
-          return chartData || [];
+          try {
+            const stats = await api.statistics.getStatistics(
+              c.startDate,
+              c.endDate,
+              [c.parameterKey]
+            );
+            const chartData = stats[c.parameterKey]?.map((v) => ({
+              name: v.name,
+              value: v[c.type],
+              color: stc(v.name),
+            }));
+            return chartData || [];
+          } catch (error) {
+            return [];
+          }
         };
         return (
           <Chart

@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import { memo } from 'react';
 import {
   Cell,
@@ -6,7 +7,9 @@ import {
   PieChart as RPieChart,
   PieLabel,
   PieLabelRenderProps,
+  Tooltip,
 } from 'recharts';
+import { ContentType } from 'recharts/types/component/DefaultLegendContent';
 import { useLoadingState, useMethodAfterMount, useValue } from '~/hooks';
 import ChartLayout, { ChartLayoutProps } from './ChartLayout';
 import { ChartData } from './types';
@@ -45,11 +48,13 @@ const PieChart = ({ title, subTitle, loadData, onRemove }: Props) => {
             <Cell key={index} fill={item.color} />
           ))}
         />
+        <Tooltip separator="" formatter={() => ''} />
         <Legend
           iconType="circle"
           layout="vertical"
           align="right"
           verticalAlign="middle"
+          content={renderLegend}
         />
       </RPieChart>
     </ChartLayout>
@@ -90,6 +95,20 @@ const renderCustomizedLabel: PieLabel<PieLabelRenderProps> = ({
         children={`${+(percent * 100).toFixed(1)}%`}
       />
     </g>
+  );
+};
+
+const renderLegend: ContentType = ({ payload }) => {
+  return (
+    <Box pl={6} pr={2} maxW="200px" h="375px" overflowY="auto">
+      <ul>
+        {payload?.map((entry, i) => (
+          <li key={i} style={{ color: entry.color }}>
+            {entry.value}
+          </li>
+        ))}
+      </ul>
+    </Box>
   );
 };
 
