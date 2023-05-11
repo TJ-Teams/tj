@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Statistics, StatisticsDto } from '~/types/statistics';
 import BaseController from './BaseController';
 
@@ -7,7 +8,11 @@ export class StatisticsController extends BaseController {
     endDate: Date,
     parameterKeys: string[]
   ): Promise<Statistics> {
-    const data = await this.get<StatisticsDto>('/api/stat/get');
+    const data = await this.get<StatisticsDto>('/api/stat/get', {
+      startDate: dayjs(startDate).format('DD/MM/YYYY'),
+      endDate: dayjs(endDate).format('DD/MM/YYYY'),
+      groupKeys: parameterKeys.join(','),
+    });
 
     const normalizedData = Object.fromEntries(
       Object.entries(data).map<[string, Statistics[string]]>(([key, value]) => {

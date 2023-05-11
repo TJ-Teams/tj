@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Recommendation } from '~/types/recommendations';
 import snakeToCamel from '~/utils/snake-to-camel';
 import BaseController from './BaseController';
@@ -9,7 +10,11 @@ export class RecommendationsController extends BaseController {
     parameterKeys: string[]
   ): Promise<Recommendation[]> {
     try {
-      const data = await this.get<Recommendation[]>('/api/rec/get');
+      const data = await this.get<Recommendation[]>('/api/rec/get', {
+        startDate: dayjs(startDate).format('DD/MM/YYYY'),
+        endDate: dayjs(endDate).format('DD/MM/YYYY'),
+        groupKeys: parameterKeys.join(','),
+      });
       const normalizedData = data.map((r) =>
         Object.fromEntries(
           Object.entries(r).map(([key, value]) => [snakeToCamel(key), value])
