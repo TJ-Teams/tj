@@ -9,11 +9,9 @@ import {
   Wrap,
 } from '@chakra-ui/react';
 import { memo, useState } from 'react';
-import api from '~/api';
-import PageLoader from '~/components/PageLoader';
 import SelectDataRange from '~/components/SelectDataRange';
-import { useLoadingState, useMethodAfterMount, useValue } from '~/hooks';
-import { Parameter } from '~/types/deals';
+import { useValue } from '~/hooks';
+import { useRecommendationsContext } from './recommendations-context';
 
 type Props = {
   isLoading?: boolean;
@@ -35,7 +33,7 @@ const RecommendationsForm = ({
   onSubmit,
   ...props
 }: Props) => {
-  const parameters = useValue<Parameter[]>([]);
+  const { parametersMap } = useRecommendationsContext();
   const [parameterKeys, setParameterKeys] = useState(
     () => new Set(defaultParameterKeys)
   );
@@ -45,26 +43,6 @@ const RecommendationsForm = ({
   const startDate = useValue(defaultStartDate);
   const endDate = useValue(defaultEndDate);
 
-  const { isLoading: isParamsLoading, setIsLoading: setIsParamsLoading } =
-    useLoadingState(true);
-
-  useMethodAfterMount(() => api.deals.getParameters(), {
-    onStartLoading: setIsParamsLoading.on,
-    onEndLoading: setIsParamsLoading.off,
-    next: (params) => {
-      setParameterKeys(
-        new Set(
-          [...parameterKeys].filter((key) => params.find((p) => p.key === key))
-        )
-      );
-      parameters.set(params);
-    },
-  });
-
-  if (isParamsLoading) {
-    return isLoading ? null : <PageLoader />;
-  }
-
   const handleDateRangeChange = (start?: Date, end?: Date) => {
     startDate.set(start);
     endDate.set(end);
@@ -72,7 +50,9 @@ const RecommendationsForm = ({
   };
 
   const handleChooseParameter = (parameterKey: string) => () => {
-    const newParameterKeys = new Set(parameterKeys);
+    const newParameterKeys = new Set(
+      [...parameterKeys].filter((key) => parametersMap.has(key))
+    );
     if (parameterKeys.has(parameterKey)) {
       newParameterKeys.delete(parameterKey);
     } else {
@@ -90,7 +70,7 @@ const RecommendationsForm = ({
     <Flex flexDir="column" {...props}>
       <Text fontWeight="bold" children="Параметры для анализа" />
       <Wrap mt={2} mb={6}>
-        {parameters.get
+        {[...parametersMap.values()]
           .filter((p) => p.type === 'string')
           .map((p) => (
             <CheckboxButton

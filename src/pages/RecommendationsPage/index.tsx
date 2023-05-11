@@ -7,6 +7,7 @@ import { useLoadingState, useValue } from '~/hooks';
 import { Recommendation } from '~/types/recommendations';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import RatingTable from './RatingTable';
+import { RecommendationsProvider } from './recommendations-context';
 import RecommendationsForm from './RecommendationsForm';
 import RecommendationsTable from './RecommendationsTable';
 import { TopData } from './types';
@@ -53,40 +54,52 @@ const RecommendationsPage = () => {
   const hasData = !isLoading && Boolean(startDate.get && endDate.get);
 
   return (
-    <Flex
-      flex={1}
-      py="36px"
-      align="center"
-      flexDir="column"
-      whiteSpace="break-spaces"
-    >
-      <RecommendationsForm
-        isLoading={isLoading}
-        defaultParameterKeys={parameterKeys.get}
-        defaultStartDate={startDate.get}
-        defaultEndDate={endDate.get}
-        w="min(700px, 95%)"
-        onSubmit={handleLoad}
-      />
-      {hasData && (
-        <HStack mt="36px" w="80vw" spacing="70px" align="flex-start">
-          <RatingTable
-            title="Лучшие стратегии"
-            data={getTop5ByAccuracy(topInAccuracy)}
-            colors={topColors}
-          />
-          <RatingTable
-            title="Худшие стратегии"
-            data={getBottom5ByAccuracy(topInAccuracy)}
-            colors={bottomColors}
-          />
-        </HStack>
-      )}
-      {hasData && (
-        <RecommendationsTable mt="70px" w="65vw" data={topInAccuracy} />
-      )}
-      {isLoading && <PageLoader />}
-    </Flex>
+    <RecommendationsProvider>
+      <Flex
+        flex={1}
+        py="36px"
+        align="center"
+        flexDir="column"
+        whiteSpace="break-spaces"
+      >
+        <RecommendationsForm
+          isLoading={isLoading}
+          defaultParameterKeys={parameterKeys.get}
+          defaultStartDate={startDate.get}
+          defaultEndDate={endDate.get}
+          w="min(700px, 95%)"
+          onSubmit={handleLoad}
+        />
+        {hasData && (
+          <HStack mt="36px" w="80vw" spacing="70px" align="flex-start">
+            <RatingTable
+              title="Лучшие стратегии"
+              colors={topColors}
+              data={getTop3ByAccuracy(topInAccuracy).map(
+                ({ accuracy, profitability, ...d }) => ({
+                  name: Object.values(d).join(', '),
+                  value: accuracy,
+                })
+              )}
+            />
+            <RatingTable
+              title="Худшие стратегии"
+              colors={bottomColors}
+              data={getBottom3ByAccuracy(topInAccuracy).map(
+                ({ accuracy, profitability, ...d }) => ({
+                  name: Object.values(d).join(', '),
+                  value: accuracy,
+                })
+              )}
+            />
+          </HStack>
+        )}
+        {hasData && (
+          <RecommendationsTable mt="70px" w="75vw" data={topInAccuracy} />
+        )}
+        {isLoading && <PageLoader />}
+      </Flex>
+    </RecommendationsProvider>
   );
 };
 
@@ -109,7 +122,7 @@ const calculateTopData = (recommendations: Recommendation[]): TopData[] => {
   const topData = recommendations
     .map<TopData>(
       ({ analyticsSum, analyticsCountPlus, analyticsCountMinus, ...r }) => ({
-        name: Object.values(r).join(', '),
+        ...r,
         accuracy: calculateAccuracy(analyticsCountPlus, analyticsCountMinus),
         profitability: analyticsSum,
       })
@@ -127,33 +140,23 @@ const calculateAccuracy = (
   return (analyticsCountPlus / total) * 100;
 };
 
-const getTop5ByAccuracy = (data: TopData[]) => {
-  return data
-    .slice(0, 5)
-    .filter((d) => d.accuracy >= 50)
-    .map((d) => ({ name: d.name, value: d.accuracy }));
+const getTop3ByAccuracy = (data: TopData[]) => {
+  return data.slice(0, 3).filter((d) => d.accuracy >= 50);
 };
 
-const getBottom5ByAccuracy = (data: TopData[]) => {
-  return data
-    .slice(-5)
-    .filter((d) => d.accuracy < 50)
-    .map((d) => ({ name: d.name, value: d.accuracy }));
+const getBottom3ByAccuracy = (data: TopData[]) => {
+  return data.slice(-3).filter((d) => d.accuracy < 50);
 };
 
 const topColors = [
   '#852AD3',
-  'rgba(133, 42, 211, 0.88)',
   'rgba(133, 42, 211, 0.75)',
-  'rgba(133, 42, 211, 0.6)',
   'rgba(133, 42, 211, 0.55)',
 ];
 
 const bottomColors = [
   'rgba(161, 16, 68, 0.65)',
-  'rgba(161, 16, 68, 0.75)',
   'rgba(161, 16, 68, 0.85)',
-  'rgba(161, 16, 68, 0.95)',
   '#A11044',
 ];
 
