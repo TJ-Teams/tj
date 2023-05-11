@@ -78,7 +78,7 @@ const castValueToType = (
   switch (type) {
     case 'date':
       const date = dayjs.utc(value, 'YYYY-MM-DD');
-      return date.isValid() ? date.format('M/DD/YY') : undefined;
+      return date.isValid() ? date.format('YYYY-MM-DD') : undefined;
     case 'number':
       return parseFloat(value.replaceAll(',', '.'));
     default:

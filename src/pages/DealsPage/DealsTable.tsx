@@ -25,7 +25,23 @@ const DealsTable = () => {
   );
 
   const handleDealsChange = useCallback((newDeals: Deal[]) => {
-    deals.set(newDeals);
+    deals.set(
+      newDeals.map((deal) => {
+        const fixedDeals = Object.fromEntries(
+          parameters.get
+            .filter((p) => p.type === 'date')
+            .map((p) => {
+              const date = dayjs.utc(deal[p.key]);
+              const normalizedDate =
+                deal[p.key] && date.isValid()
+                  ? date.format('YYYY-MM-DD')
+                  : undefined;
+              return [p.key, normalizedDate];
+            })
+        );
+        return { ...deal, ...fixedDeals };
+      })
+    );
     setData(newDeals);
   }, []);
 
@@ -61,7 +77,7 @@ const normalizeDeals = (deals: Deal[], parameters: Parameter[]) => {
   return deals.map((deal) => {
     const fixedDeals = Object.fromEntries(
       columnWithDate.map((p) => {
-        const date = dayjs(deal[p.key]);
+        const date = dayjs.utc(deal[p.key], 'YYYY-MM-DD');
         const normalizedDate =
           deal[p.key] && date.isValid() ? date.toDate() : undefined;
         return [p.key, normalizedDate];

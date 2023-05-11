@@ -9,8 +9,8 @@ export class StatisticsController extends BaseController {
     parameterKeys: string[]
   ): Promise<Statistics> {
     const data = await this.get<StatisticsDto>('/api/stat/get', {
-      startDate: dayjs(startDate).format('DD/MM/YYYY'),
-      endDate: dayjs(endDate).format('DD/MM/YYYY'),
+      startDate: dayjs(startDate).format('YYYY-MM-DD'),
+      endDate: dayjs(endDate).format('YYYY-MM-DD'),
       groupKeys: parameterKeys.join(','),
     });
 

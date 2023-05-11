@@ -11,8 +11,8 @@ export class RecommendationsController extends BaseController {
   ): Promise<Recommendation[]> {
     try {
       const data = await this.get<Recommendation[]>('/api/rec/get', {
-        startDate: dayjs(startDate).format('DD/MM/YYYY'),
-        endDate: dayjs(endDate).format('DD/MM/YYYY'),
+        startDate: dayjs(startDate).format('YYYY-MM-DD'),
+        endDate: dayjs(endDate).format('YYYY-MM-DD'),
         groupKeys: parameterKeys.join(','),
       });
       const normalizedData = data.map((r) =>

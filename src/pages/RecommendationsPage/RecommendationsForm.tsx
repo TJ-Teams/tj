@@ -96,7 +96,7 @@ const RecommendationsForm = ({
             <CheckboxButton
               key={p.key}
               isActive={parameterKeys.has(p.key)}
-              isDisabled={parameterKeys.size >= 5}
+              isDisabled={parameterKeys.size > 6}
               children={p.name}
               onClick={handleChooseParameter(p.key)}
             />
