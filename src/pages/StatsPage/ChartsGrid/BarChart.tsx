@@ -17,9 +17,10 @@ import { ChartData } from './types';
 type Props = {
   chartKey: string;
   loadData: () => Promise<ChartData[]>;
+  domain?: [number, number];
 } & ChartLayoutProps;
 
-const BarChart = ({ title, subTitle, loadData, onRemove }: Props) => {
+const BarChart = ({ title, subTitle, domain, loadData, onRemove }: Props) => {
   const data = useValue<ChartData[]>([]);
   const { isLoading, setIsLoading } = useLoadingState(true);
 
@@ -49,7 +50,9 @@ const BarChart = ({ title, subTitle, loadData, onRemove }: Props) => {
         <YAxis
           type="number"
           tickFormatter={tickFormatter}
-          domain={[(min: number) => (min < 0 ? min * 1.1 : min), 'auto']}
+          domain={
+            domain || [(min: number) => (min < 0 ? min * 1.1 : min), 'auto']
+          }
         />
         <Tooltip formatter={(value) => +(+value).toFixed(1)} />
         <ReferenceLine y={0} stroke="rgb(102, 102, 102)" />

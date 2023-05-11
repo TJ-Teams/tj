@@ -31,7 +31,7 @@ const ChartsGrid = () => {
       {charts.get.map((c) => {
         const title = parametersMap.get(c.parameterKey)?.name;
         if (!title) return null;
-        const Chart = chartComponent[c.type];
+        const info = chartInfo[c.type];
         const chartKey = getChartKey(c);
         const loadData = async () => {
           try {
@@ -51,13 +51,14 @@ const ChartsGrid = () => {
           }
         };
         return (
-          <Chart
+          <info.Chart
             key={chartKey}
             chartKey={chartKey}
             title={title}
             subTitle={getChartSubtitle(c)}
             loadData={loadData}
             onRemove={handleChartRemove(chartKey)}
+            domain={'domain' in info ? info.domain : undefined}
           />
         );
       })}
@@ -73,10 +74,17 @@ const getChartSubtitle = ({ type, startDate, endDate }: Chart): string => {
   return `${label}\n${start} - ${end}`;
 };
 
-const chartComponent = {
-  volume: PieChart,
-  accuracy: BarChart,
-  profitability: BarChart,
+const chartInfo = {
+  volume: {
+    Chart: PieChart,
+  },
+  accuracy: {
+    Chart: BarChart,
+    domain: [0, 100] as [number, number],
+  },
+  profitability: {
+    Chart: BarChart,
+  },
 } as const;
 
 export default ChartsGrid;
