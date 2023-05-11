@@ -13,10 +13,15 @@ import { TopData } from './types';
 
 const startDateKey = 'recommendations:start-date';
 const endDateKey = 'recommendations:end-date';
+const parametersKey = 'recommendations:parameters';
 
 const RecommendationsPage = () => {
   const { isLoading, trackLoading } = useLoadingState(false);
 
+  const parameterKeys = useValue(
+    safelyLocalStorage.getJsonOrElse<string[]>(parametersKey, []),
+    { onUpdate: (p) => safelyLocalStorage.setJson(parametersKey, p) }
+  );
   const startDate = useValue(getDateFromStorage(startDateKey), {
     onUpdate: saveDateToStorage(startDateKey),
   });
@@ -25,18 +30,24 @@ const RecommendationsPage = () => {
   });
   const [topInAccuracy, setTopInAccuracy] = useState<TopData[]>([]);
 
-  const handleLoad = (start: Date, end: Date) =>
+  const handleLoad = (start: Date, end: Date, keys: string[]) =>
     trackLoading(async () => {
       startDate.set(start);
       endDate.set(end);
-      const data = await api.recommendations.getRecommendations(start, end, []);
+      parameterKeys.set(keys);
+      const data = await api.recommendations.getRecommendations(
+        start,
+        end,
+        keys
+      );
 
       setTopInAccuracy(calculateTopData(data));
     })();
 
   useEffect(() => {
-    if (!startDate.get || !endDate.get) return;
-    handleLoad(startDate.get, endDate.get);
+    if (!startDate.get || !endDate.get || parameterKeys.get.length === 0)
+      return;
+    handleLoad(startDate.get, endDate.get, parameterKeys.get);
   }, []);
 
   const hasData = !isLoading && Boolean(startDate.get && endDate.get);
@@ -51,6 +62,7 @@ const RecommendationsPage = () => {
     >
       <RecommendationsForm
         isLoading={isLoading}
+        defaultParameterKeys={parameterKeys.get}
         defaultStartDate={startDate.get}
         defaultEndDate={endDate.get}
         w="min(700px, 95%)"
@@ -94,30 +106,25 @@ const saveDateToStorage = (key: string) => (date: Date | undefined) => {
 };
 
 const calculateTopData = (recommendations: Recommendation[]): TopData[] => {
-  let totalProfitability = 0;
-
   const topData = recommendations
-    .map<TopData>((r) => {
-      totalProfitability += r.analyticsSum;
-      return {
-        name: `${r.marketplace}, ${r.tradingMode}, ${r.broker}`,
-        accuracy: calculateAccuracy(r),
-        profitability: r.analyticsSum,
-        // percentageProfitability: 0,
-      };
-    })
-    // .map((d) => ({
-    //   ...d,
-    //   percentageProfitability: (d.profitability / totalProfitability) * 100,
-    // }))
+    .map<TopData>(
+      ({ analyticsSum, analyticsCountPlus, analyticsCountMinus, ...r }) => ({
+        name: Object.values(r).join(', '),
+        accuracy: calculateAccuracy(analyticsCountPlus, analyticsCountMinus),
+        profitability: analyticsSum,
+      })
+    )
     .sort((a, b) => b.accuracy - a.accuracy);
 
   return topData;
 };
 
-const calculateAccuracy = (r: Recommendation): number => {
-  const total = r.analyticsCountPlus + r.analyticsCountMinus;
-  return (r.analyticsCountPlus / total) * 100;
+const calculateAccuracy = (
+  analyticsCountPlus: number,
+  analyticsCountMinus: number
+): number => {
+  const total = analyticsCountPlus + analyticsCountMinus;
+  return (analyticsCountPlus / total) * 100;
 };
 
 const getTop5ByAccuracy = (data: TopData[]) => {

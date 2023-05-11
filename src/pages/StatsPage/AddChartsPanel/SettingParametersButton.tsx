@@ -17,7 +17,9 @@ const SettingParametersButton = () => {
   const [isOpen, setIsOpen] = useBoolean(false);
 
   const handleSubmit = (parameterKeys: string[]) => {
-    chosenParameterKeys.set(parameterKeys);
+    chosenParameterKeys.set(
+      parameterKeys.filter((key) => parametersMap.has(key))
+    );
     subscriptions.ping('chosen-parameters');
   };
 
