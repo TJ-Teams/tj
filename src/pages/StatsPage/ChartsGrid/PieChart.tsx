@@ -1,4 +1,5 @@
 import { Box } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import { memo } from 'react';
 import {
   Cell,
@@ -19,14 +20,10 @@ type Props = {
   loadData: () => Promise<ChartData[]>;
 } & ChartLayoutProps;
 
-const PieChart = ({ title, subTitle, loadData, onRemove }: Props) => {
-  const data = useValue<ChartData[]>([]);
-  const { isLoading, setIsLoading } = useLoadingState(true);
-
-  useMethodAfterMount(loadData, {
-    onStartLoading: setIsLoading.on,
-    onEndLoading: setIsLoading.off,
-    next: data.set,
+const PieChart = ({ chartKey, title, subTitle, loadData, onRemove }: Props) => {
+  const { data, isLoading } = useQuery({
+    queryKey: [chartKey],
+    queryFn: loadData,
   });
 
   return (
@@ -34,17 +31,17 @@ const PieChart = ({ title, subTitle, loadData, onRemove }: Props) => {
       title={title}
       subTitle={subTitle}
       isLoading={isLoading}
-      isEmpty={data.get.length === 0}
+      isEmpty={!data?.length}
       onRemove={onRemove}
     >
       <RPieChart>
         <Pie
-          data={data.get}
+          data={data}
           dataKey="value"
           innerRadius="35%"
           labelLine={false}
           label={renderCustomizedLabel}
-          children={data.get.map((item, index) => (
+          children={data?.map((item, index) => (
             <Cell key={index} fill={item.color} />
           ))}
         />

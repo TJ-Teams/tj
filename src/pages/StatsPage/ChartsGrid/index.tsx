@@ -7,9 +7,11 @@ import BarChart from './BarChart';
 import PieChart from './PieChart';
 import stc from 'string-to-color';
 import api from '~/api';
+import { useQueryClient } from '@tanstack/react-query';
 
 const ChartsGrid = () => {
   const forceUpdate = useForceUpdate();
+  const queryClient = useQueryClient();
   const { charts, parametersMap, subscriptions } = useStatsContext();
 
   subscriptions.useSubscribe('charts', forceUpdate);
@@ -17,6 +19,7 @@ const ChartsGrid = () => {
   const handleChartRemove = (chartKey: string) => () => {
     const newChart = charts.get.filter((c) => getChartKey(c) !== chartKey);
     charts.set(newChart);
+    queryClient.removeQueries({ queryKey: [chartKey] });
     forceUpdate();
   };
 

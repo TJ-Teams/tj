@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { memo } from 'react';
 import {
   Bar,
@@ -10,7 +11,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useLoadingState, useMethodAfterMount, useValue } from '~/hooks';
 import ChartLayout, { ChartLayoutProps } from './ChartLayout';
 import { ChartData } from './types';
 
@@ -20,14 +20,17 @@ type Props = {
   domain?: [number, number];
 } & ChartLayoutProps;
 
-const BarChart = ({ title, subTitle, domain, loadData, onRemove }: Props) => {
-  const data = useValue<ChartData[]>([]);
-  const { isLoading, setIsLoading } = useLoadingState(true);
-
-  useMethodAfterMount(loadData, {
-    onStartLoading: setIsLoading.on,
-    onEndLoading: setIsLoading.off,
-    next: data.set,
+const BarChart = ({
+  chartKey,
+  title,
+  subTitle,
+  domain,
+  loadData,
+  onRemove,
+}: Props) => {
+  const { data, isLoading } = useQuery({
+    queryKey: [chartKey],
+    queryFn: loadData,
   });
 
   return (
@@ -35,15 +38,16 @@ const BarChart = ({ title, subTitle, domain, loadData, onRemove }: Props) => {
       title={title}
       subTitle={subTitle}
       isLoading={isLoading}
-      isEmpty={data.get.length === 0}
+      isEmpty={!data?.length}
       onRemove={onRemove}
     >
-      <RBarChart data={data.get} maxBarSize={55}>
+      <RBarChart data={data} maxBarSize={55}>
         <CartesianGrid
           strokeDasharray="4"
           verticalCoordinatesGenerator={(props) => {
-            const range = props.offset?.width / data.get.length;
-            return data.get.map((_, i) => props.offset?.left + range * (i + 1));
+            if (!data) return [];
+            const range = props.offset?.width / data.length;
+            return data.map((_, i) => props.offset?.left + range * (i + 1));
           }}
         />
         <XAxis dataKey="name" />
@@ -62,7 +66,7 @@ const BarChart = ({ title, subTitle, domain, loadData, onRemove }: Props) => {
             position="top"
             valueAccessor={(e: { value: number }) => +e.value.toFixed(1)}
           />
-          {data.get.map((item, index) => (
+          {data?.map((item, index) => (
             <Cell key={index} fill={item.color} />
           ))}
         </Bar>
