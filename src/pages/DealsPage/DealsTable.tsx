@@ -1,11 +1,12 @@
 import { Box, ChakraProps } from '@chakra-ui/react';
 import dayjs from 'dayjs';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import * as rdg from 'react-datasheet-grid';
 import { v4 as uuidV4 } from 'uuid';
 import { Deal, Parameter, ProviderType, TypeParameter } from '~/types/deals';
 import BottomBar from './BottomBar';
 import { useDealsContext } from './deals-context';
+import TableContextMenu from './TableContextMenu';
 
 const DealsTable = () => {
   const key = useRef(uuidV4());
@@ -18,7 +19,7 @@ const DealsTable = () => {
       title: p.name,
       minWidth: 15 * Math.max(12, p.name.length),
     }));
-  }, [parameters.get.length]);
+  }, [JSON.stringify(parameters.get)]);
 
   const [data, setData] = useState(() =>
     normalizeDeals(deals.get, parameters.get)
@@ -66,7 +67,7 @@ const DealsTable = () => {
         createRow={createRow}
         duplicateRow={duplicateRow}
         addRowsComponent={BottomBar}
-        contextMenuComponent={ContextMenu}
+        contextMenuComponent={TableContextMenu}
       />
     </Box>
   );
@@ -106,111 +107,6 @@ const createRow = () => ({
 const duplicateRow = (opts: { rowData: Deal; rowIndex: number }): Deal => ({
   ...opts.rowData,
   id: uuidV4(),
-});
-
-const createContextMenuComponent =
-  (renderItem: (item: rdg.ContextMenuItem) => JSX.Element) =>
-  ({
-    clientX,
-    clientY,
-    items,
-    close,
-    cursorIndex,
-  }: rdg.ContextMenuComponentProps) => {
-    const { deals, parameters, subscriptions } = useDealsContext();
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      const onClickOutside = (event: MouseEvent) => {
-        const clickInside = containerRef.current?.contains(
-          event.target as Node
-        );
-        if (!clickInside) close();
-      };
-
-      document.addEventListener('mousedown', onClickOutside);
-
-      return () => {
-        document.removeEventListener('mousedown', onClickOutside);
-      };
-    }, [close]);
-
-    const removeColumn = () => {
-      const parameter = parameters.get.at(cursorIndex?.col);
-      close();
-      if (!parameter) return;
-
-      const isLastColumn = cursorIndex?.col === parameters.get.length - 1;
-
-      const newDeals = deals.get.map((d) => {
-        return Object.fromEntries(
-          Object.entries(d).filter(([key, _]) => key !== parameter.key)
-        ) as Deal;
-      });
-      const newParameters = parameters.get.filter(
-        (_, i) => i !== cursorIndex?.col
-      );
-
-      deals.set(newDeals);
-      parameters.set(newParameters);
-      isLastColumn && subscriptions.ping('table-key');
-      subscriptions.ping('table');
-    };
-
-    return (
-      <div
-        className="dsg-context-menu"
-        style={{ left: `${clientX}px`, top: `${clientY}px` }}
-        ref={containerRef}
-      >
-        {items.map((item) => (
-          <div
-            key={item.type}
-            onClick={item.action}
-            className="dsg-context-menu-item"
-            children={renderItem(item)}
-          />
-        ))}
-        {cursorIndex?.col >= 0 && parameters.get.length > 1 && (
-          <div
-            className="dsg-context-menu-item"
-            onClick={removeColumn}
-            children="Удалить столбец"
-          />
-        )}
-      </div>
-    );
-  };
-
-const ContextMenu = createContextMenuComponent((item: rdg.ContextMenuItem) => {
-  switch (item.type) {
-    case 'COPY':
-      return <>Копировать</>;
-    case 'CUT':
-      return <>Вырезать</>;
-    case 'PASTE':
-      return <>Вставить</>;
-    case 'DELETE_ROW':
-      return <>Удалить строчку</>;
-    case 'DELETE_ROWS':
-      return (
-        <>
-          Удалить строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
-        </>
-      );
-    case 'DUPLICATE_ROW':
-      return <>Дублировать строчку</>;
-    case 'DUPLICATE_ROWS':
-      return (
-        <>
-          Дублировать строчки с <b>{item.fromRow}</b> по <b>{item.toRow}</b>
-        </>
-      );
-    case 'INSERT_ROW_BELLOW':
-      return <>Создать строчку снизу</>;
-    default:
-      return item;
-  }
 });
 
 const dataSheetGridStyles: ChakraProps['sx'] = {
