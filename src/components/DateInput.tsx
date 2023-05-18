@@ -1,5 +1,5 @@
 import { Box, ChakraProps, Input, InputProps } from '@chakra-ui/react';
-import { memo, useEffect, useState } from 'react';
+import { FormEvent, memo, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -40,6 +40,7 @@ const DateInput = ({
         onSelect={handleChange}
         onChange={handleChange}
         disabledKeyboardNavigation
+        placeholderText="ДД.ММ.ГГГГ"
         customInput={
           <Input
             p={0}
@@ -48,13 +49,27 @@ const DateInput = ({
             bg="transparent"
             fontSize="inherit"
             textAlign="center"
+            onInput={maskDate}
             borderRadius={0}
+            _placeholder={{ color: 'neutral.3', fontSize: '14px' }}
             {...inputProps}
           />
         }
       />
     </Box>
   );
+};
+
+const maskDate = (e: FormEvent<HTMLInputElement>) => {
+  let value = e.currentTarget.value.replace(/\D/g, '').slice(0, 8);
+  // @ts-ignore в дефолтном типе отсутствует поле
+  const offset = e.nativeEvent.inputType === 'insertText' ? 1 : 0;
+  if (value.length >= 5 - offset) {
+    value = `${value.slice(0, 2)}.${value.slice(2, 4)}.${value.slice(4)}`;
+  } else if (value.length >= 3 - offset) {
+    value = `${value.slice(0, 2)}.${value.slice(2)}`;
+  }
+  e.currentTarget.value = value;
 };
 
 const datePickerStyle: ChakraProps['sx'] = {
