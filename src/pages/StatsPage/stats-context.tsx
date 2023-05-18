@@ -1,3 +1,4 @@
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext } from 'react';
 import api from '~/api';
 import PageLoader from '~/components/PageLoader';
@@ -33,7 +34,17 @@ export const useStatsContext = (): StatsContent => useContext(DealsContext);
 const chartsStorageKey = 'stats-page:charts';
 const paramsStorageKey = 'stats-page:chosen-params';
 
+const fetchParametersWithCache = async (queryClient: QueryClient) => {
+  const { parameters } = await queryClient.fetchQuery({
+    queryKey: ['deals'],
+    staleTime: Infinity,
+    queryFn: () => api.deals.getDeals(),
+  });
+  return parameters;
+};
+
 export const StatsProvider = ({ children }: StatsProviderProps) => {
+  const queryClient = useQueryClient();
   const { isLoading, setIsLoading } = useLoadingState(true);
 
   const subscriptions = useSubscriptions<SubscribeKey>();
@@ -48,7 +59,7 @@ export const StatsProvider = ({ children }: StatsProviderProps) => {
 
   useMethodAfterMount(
     async () => {
-      const parameters = await api.deals.getParameters();
+      const parameters = await fetchParametersWithCache(queryClient);
       const charts = safelyLocalStorage.getJsonOrElse<Chart[]>(
         chartsStorageKey,
         []

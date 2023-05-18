@@ -63,7 +63,10 @@ const RecommendationsForm = ({
 
   const handleSubmit = async () => {
     if (!startDate.get || !endDate.get || parameterKeys.size === 0) return;
-    await onSubmit?.(startDate.get, endDate.get, [...parameterKeys]);
+    const sortedParameterKeys = [...parameterKeys].sort((a, b) =>
+      a.localeCompare(b)
+    );
+    await onSubmit?.(startDate.get, endDate.get, sortedParameterKeys);
   };
 
   return (

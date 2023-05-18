@@ -1,3 +1,4 @@
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext } from 'react';
 import api from '~/api';
 import PageLoader from '~/components/PageLoader';
@@ -20,14 +21,24 @@ const RecommendationsContext = createContext<RecommendationsContent>({
 export const useRecommendationsContext = (): RecommendationsContent =>
   useContext(RecommendationsContext);
 
+const fetchParametersWithCache = (queryClient: QueryClient) => async () => {
+  const { parameters } = await queryClient.fetchQuery({
+    queryKey: ['deals'],
+    staleTime: Infinity,
+    queryFn: () => api.deals.getDeals(),
+  });
+  return parameters;
+};
+
 export const RecommendationsProvider = ({
   children,
 }: RecommendationsProviderProps) => {
+  const queryClient = useQueryClient();
   const { isLoading, setIsLoading } = useLoadingState(true);
 
   const parametersMap = useValue(new Map<string, Parameter>());
 
-  useMethodAfterMount(() => api.deals.getParameters(), {
+  useMethodAfterMount(fetchParametersWithCache(queryClient), {
     onStartLoading: setIsLoading.on,
     onEndLoading: setIsLoading.off,
     next: (loadedParams) => {

@@ -22,8 +22,6 @@ const createContextMenuComponent =
       cursorIndex?.col >= 0 &&
       parameters.get.length > 1;
 
-    console.log(cursorIndex, isFirstColumn, isLastColumn);
-
     useEffect(() => {
       const onClickOutside = (event: MouseEvent) => {
         const clickInside = containerRef.current?.contains(

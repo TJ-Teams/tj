@@ -1,11 +1,11 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 import { createContext, ReactNode, useContext } from 'react';
 import api from '~/api';
 import PageLoader from '~/components/PageLoader';
 import { useDebounce, useLoadingState, useMethodAfterMount } from '~/hooks';
 import useSubscriptions, { UseSubscriptions } from '~/hooks/useSubscriptions';
 import useValue, { ValueRef } from '~/hooks/useValue';
-import { Deal, Parameter } from '~/types/deals';
+import { Deal, Deals, Parameter } from '~/types/deals';
 import { IndicatorStatus } from './BottomBar/SaveIndicator';
 
 type SubscribeKey =
@@ -34,23 +34,23 @@ const DealsContext = createContext<DealsContent>({
 
 export const useDealsContext = (): DealsContent => useContext(DealsContext);
 
+const fetchDealsWithCache = async (queryClient: QueryClient) => {
+  const result = await queryClient.fetchQuery({
+    queryKey: ['deals'],
+    staleTime: Infinity,
+    queryFn: () => api.deals.getDeals(),
+  });
+  return result;
+};
+
 export const DealsProvider = ({ children }: DealsProviderProps) => {
   const queryClient = useQueryClient();
   const debounce = useDebounce(2500);
   const { isLoading, setIsLoading } = useLoadingState(true);
   const subscriptions = useSubscriptions<SubscribeKey>();
 
-  const fetchDealsWithCache = async () => {
-    const result = await queryClient.fetchQuery({
-      queryKey: ['deals'],
-      staleTime: Infinity,
-      queryFn: () => api.deals.getDeals(),
-    });
-    return result;
-  };
-
   const updateDeals = (parameters: Parameter[], deals: Deal[]) => {
-    queryClient.setQueriesData(['deals'], [parameters, deals]);
+    queryClient.setQueriesData<Deals>(['deals'], { parameters, deals });
     subscriptions.ping('indicator:not-saved');
     debounce.set(() => {
       subscriptions.ping('indicator:saved');
@@ -72,20 +72,20 @@ export const DealsProvider = ({ children }: DealsProviderProps) => {
     },
   });
 
-  useMethodAfterMount(fetchDealsWithCache, {
+  useMethodAfterMount(() => fetchDealsWithCache(queryClient), {
     onEndLoading: setIsLoading.off,
     onError: () => subscriptions.ping('indicator:error', 100),
-    next: ([newParameters, newDeals]) => {
-      parameters.set(newParameters, true);
-      deals.set(newDeals, true);
+    next: (result) => {
+      parameters.set(result.parameters, true);
+      deals.set(result.deals, true);
     },
   });
 
   const refetch = async () => {
-    await queryClient.invalidateQueries(['deals']);
-    const [newParameters, newDeals] = await fetchDealsWithCache();
-    parameters.set(newParameters, true);
-    deals.set(newDeals, true);
+    queryClient.removeQueries();
+    const result = await fetchDealsWithCache(queryClient);
+    parameters.set(result.parameters, true);
+    deals.set(result.deals, true);
   };
 
   if (isLoading) return <PageLoader />;

@@ -32,3 +32,8 @@ export type DealsDto = {
   parameters: Parameter[];
   deals: Record<string, Deal>;
 };
+
+export type Deals = {
+  parameters: Parameter[];
+  deals: Deal[];
+};

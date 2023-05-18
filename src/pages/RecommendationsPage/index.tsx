@@ -1,9 +1,9 @@
 import { Flex, HStack } from '@chakra-ui/react';
+import { QueryFunction, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import api from '~/api';
 import PageLoader from '~/components/PageLoader';
-import { useLoadingState, useValue } from '~/hooks';
 import { Recommendation } from '~/types/recommendations';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import RatingTable from './RatingTable';
@@ -12,46 +12,36 @@ import RecommendationsForm from './RecommendationsForm';
 import RecommendationsTable from './RecommendationsTable';
 import { TopData } from './types';
 
-const startDateKey = 'recommendations:start-date';
-const endDateKey = 'recommendations:end-date';
-const parametersKey = 'recommendations:parameters';
+type RecommendationsState = {
+  startDate: Date;
+  endDate: Date;
+  parameterKeys: string[];
+};
+
+const stateStorageKey = 'recommendations:state';
 
 const RecommendationsPage = () => {
-  const { isLoading, trackLoading } = useLoadingState(false);
+  const [state, setState] = useState(getStateFromStorage(stateStorageKey));
 
-  const parameterKeys = useValue(
-    safelyLocalStorage.getJsonOrElse<string[]>(parametersKey, []),
-    { onUpdate: (p) => safelyLocalStorage.setJson(parametersKey, p) }
-  );
-  const startDate = useValue(getDateFromStorage(startDateKey), {
-    onUpdate: saveDateToStorage(startDateKey),
+  const { data, isInitialLoading } = useQuery({
+    enabled: !!state,
+    queryKey: [state],
+    queryFn: fetchRecommendations,
+    select: calculateTopData,
+    refetchOnWindowFocus: false,
   });
-  const endDate = useValue(getDateFromStorage(endDateKey), {
-    onUpdate: saveDateToStorage(endDateKey),
-  });
-  const [topInAccuracy, setTopInAccuracy] = useState<TopData[]>([]);
 
-  const handleLoad = (start: Date, end: Date, keys: string[]) =>
-    trackLoading(async () => {
-      startDate.set(start);
-      endDate.set(end);
-      parameterKeys.set(keys);
-      const data = await api.recommendations.getRecommendations(
-        start,
-        end,
-        keys
-      );
+  const handleSubmit = async (
+    startDate: Date,
+    endDate: Date,
+    parameterKeys: string[]
+  ) => {
+    const newState = { startDate, endDate, parameterKeys };
+    safelyLocalStorage.setJson(stateStorageKey, newState);
+    setState(newState);
+  };
 
-      setTopInAccuracy(calculateTopData(data));
-    })();
-
-  useEffect(() => {
-    if (!startDate.get || !endDate.get || parameterKeys.get.length === 0)
-      return;
-    handleLoad(startDate.get, endDate.get, parameterKeys.get);
-  }, []);
-
-  const hasData = !isLoading && Boolean(startDate.get && endDate.get);
+  const hasData = !!(!isInitialLoading && data);
 
   return (
     <RecommendationsProvider>
@@ -63,19 +53,19 @@ const RecommendationsPage = () => {
         whiteSpace="break-spaces"
       >
         <RecommendationsForm
-          isLoading={isLoading}
-          defaultParameterKeys={parameterKeys.get}
-          defaultStartDate={startDate.get}
-          defaultEndDate={endDate.get}
+          isLoading={isInitialLoading}
+          defaultParameterKeys={state?.parameterKeys}
+          defaultStartDate={state?.startDate}
+          defaultEndDate={state?.endDate}
           w="min(700px, 95%)"
-          onSubmit={handleLoad}
+          onSubmit={handleSubmit}
         />
         {hasData && (
           <HStack mt="36px" w="80vw" spacing="70px" align="flex-start">
             <RatingTable
               title="Лучшие стратегии"
               colors={topColors}
-              data={getTop3ByAccuracy(topInAccuracy).map(
+              data={getTop3ByAccuracy(data).map(
                 ({ accuracy, profitability, ...d }) => ({
                   name: Object.values(d).join(', '),
                   value: accuracy,
@@ -85,7 +75,7 @@ const RecommendationsPage = () => {
             <RatingTable
               title="Худшие стратегии"
               colors={bottomColors}
-              data={getBottom3ByAccuracy(topInAccuracy).map(
+              data={getBottom3ByAccuracy(data).map(
                 ({ accuracy, profitability, ...d }) => ({
                   name: Object.values(d).join(', '),
                   value: accuracy,
@@ -94,29 +84,44 @@ const RecommendationsPage = () => {
             />
           </HStack>
         )}
-        {hasData && (
-          <RecommendationsTable mt="70px" w="75vw" data={topInAccuracy} />
-        )}
-        {isLoading && <PageLoader />}
+        {hasData && <RecommendationsTable mt="70px" w="75vw" data={data} />}
+        {isInitialLoading && <PageLoader />}
       </Flex>
     </RecommendationsProvider>
   );
 };
 
-const getDateFromStorage = (key: string): Date | undefined => {
-  const date = safelyLocalStorage.get(key);
-  if (!date) return undefined;
-  const normalizedDate = dayjs.utc(date);
-  return normalizedDate.isValid() ? normalizedDate.toDate() : undefined;
+const fetchRecommendations: QueryFunction<
+  Recommendation[],
+  readonly [RecommendationsState | undefined]
+> = async ({ queryKey }) => {
+  const [state] = queryKey;
+
+  if (!state) return [];
+
+  const result = await api.recommendations.getRecommendations(
+    state.startDate,
+    state.endDate,
+    state.parameterKeys
+  );
+
+  return result;
 };
 
-const saveDateToStorage = (key: string) => (date: Date | undefined) => {
-  if (date) {
-    safelyLocalStorage.set(key, date.toISOString());
-  } else {
-    safelyLocalStorage.remove(key);
-  }
-};
+const getStateFromStorage =
+  (key: string) => (): RecommendationsState | undefined => {
+    const state = safelyLocalStorage.getJsonOrElse<
+      RecommendationsState | undefined
+    >(key, undefined);
+
+    if (!state) return undefined;
+
+    return {
+      ...state,
+      startDate: dayjs.utc(state.startDate).toDate(),
+      endDate: dayjs.utc(state.endDate).toDate(),
+    };
+  };
 
 const calculateTopData = (recommendations: Recommendation[]): TopData[] => {
   const topData = recommendations

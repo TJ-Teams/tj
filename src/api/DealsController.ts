@@ -1,18 +1,18 @@
 import dayjs from 'dayjs';
 import { v4 as uuidV4 } from 'uuid';
-import { Deal, DealsDto, Parameter, ProviderType } from '~/types/deals';
+import { Deal, Deals, DealsDto, Parameter, ProviderType } from '~/types/deals';
 import safelyLocalStorage from '~/utils/safely-local-storage';
 import BaseController from './BaseController';
 
 export class DealsController extends BaseController {
-  async getDeals(): Promise<[Parameter[], Deal[]]> {
+  async getDeals(): Promise<Deals> {
     const data = await this.get<DealsDto>('/api/data/get');
 
     const parameters =
       data.parameters.length > 0 ? data.parameters : this.defaultParameters;
     const deals = Object.values(data.deals);
 
-    return [parameters, deals];
+    return { parameters, deals };
   }
 
   async getParameters(): Promise<Parameter[]> {
@@ -44,7 +44,7 @@ export class DealsController extends BaseController {
 }
 
 export class MockDealsController extends DealsController {
-  override async getDeals(): Promise<[Parameter[], Deal[]]> {
+  override async getDeals(): Promise<Deals> {
     const parameters = safelyLocalStorage.getJsonOrElse(
       this.parametersKey,
       this.defaultParameters
@@ -54,7 +54,7 @@ export class MockDealsController extends DealsController {
       this.defaultDeals
     );
 
-    return [parameters, deals];
+    return { parameters, deals };
   }
 
   override async getParameters(): Promise<Parameter[]> {
@@ -72,7 +72,6 @@ export class MockDealsController extends DealsController {
   ): Promise<void> {
     safelyLocalStorage.setJson(this.parametersKey, parameters);
     safelyLocalStorage.setJson(this.dealsKey, deals);
-    console.log('Updated deals');
   }
 
   override async resetDeals(): Promise<void> {
