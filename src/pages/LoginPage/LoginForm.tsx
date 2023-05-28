@@ -38,6 +38,6 @@ const loginFormSchema = yup.object({
   password: yup.string().required(requiredLabel),
 });
 
-type LoginFormData = yup.InferType<typeof loginFormSchema>;
+export type LoginFormData = yup.InferType<typeof loginFormSchema>;
 
 export default LoginForm;

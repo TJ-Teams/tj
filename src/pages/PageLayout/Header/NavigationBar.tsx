@@ -1,24 +1,65 @@
-import { HStack, LinkProps } from '@chakra-ui/react';
+import { HStack, LinkProps, Text } from '@chakra-ui/react';
 import Link from '~/components/Link';
+import { useForceUpdate } from '~/hooks';
 import paths from '~/pages/paths';
+import { useAuthContext } from '~/utils/AuthProvide';
 
-const NavLink = (props: LinkProps) => (
-  <Link
-    {...props}
-    color="black"
-    fontWeight="600"
-    fontSize="18px"
-    borderRadius={2}
-  />
-);
+const NavigationBar = () => {
+  const { isAuth, subscriptions } = useAuthContext();
+  const forceUpdate = useForceUpdate();
 
-const NavigationBar = () => (
-  <HStack spacing="60px">
-    <NavLink href={paths.main.makePath()} children="О нас" />
-    <NavLink href={paths.deals.makePath()} children="Журнал сделок" />
-    <NavLink href={paths.stats.makePath()} children="Визуализация статистики" />
-    <NavLink href={paths.recommendations.makePath()} children="Рекомендации" />
-  </HStack>
-);
+  subscriptions.useSubscribe('change-auth', forceUpdate);
+
+  return (
+    <HStack spacing="60px">
+      <NavLink href={paths.main.makePath()} children="О нас" />
+      <NavLink
+        isDisabled={!isAuth.get}
+        href={paths.deals.makePath()}
+        children="Журнал сделок"
+      />
+      <NavLink
+        isDisabled={!isAuth.get}
+        href={paths.stats.makePath()}
+        children="Визуализация статистики"
+      />
+      <NavLink
+        isDisabled={!isAuth.get}
+        href={paths.recommendations.makePath()}
+        children="Рекомендации"
+      />
+    </HStack>
+  );
+};
+
+type NavLinkProps = {
+  isDisabled?: boolean;
+} & LinkProps;
+
+const NavLink = ({ isDisabled, children, ...props }: NavLinkProps) => {
+  if (isDisabled) {
+    return (
+      <Text
+        color="black"
+        fontWeight="600"
+        fontSize="18px"
+        cursor="default"
+        opacity={0.6}
+        children={children}
+      />
+    );
+  }
+
+  return (
+    <Link
+      {...props}
+      color="black"
+      fontWeight="600"
+      fontSize="18px"
+      borderRadius={2}
+      children={children}
+    />
+  );
+};
 
 export default NavigationBar;

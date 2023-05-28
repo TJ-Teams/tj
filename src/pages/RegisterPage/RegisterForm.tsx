@@ -56,6 +56,6 @@ const registerFormSchema = yup.object({
     .oneOf([yup.ref('password')], 'Пароли не одинаковые'),
 });
 
-type RegisterFormData = yup.InferType<typeof registerFormSchema>;
+export type RegisterFormData = yup.InferType<typeof registerFormSchema>;
 
 export default RegisterForm;

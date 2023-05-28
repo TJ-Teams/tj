@@ -8,9 +8,9 @@ import { useDealsContext } from '../deals-context';
 const ResetDealsButton = () => {
   const [isOpen, setIsOpen] = useBoolean(false);
   const { subscriptions, refetch } = useDealsContext();
-  const { isLoading, trackLoading } = useLoadingState(false);
+  const { isLoading, trackLoadingDiscard } = useLoadingState(false);
 
-  const handleSubmit = trackLoading(async () => {
+  const handleSubmit = trackLoadingDiscard(async () => {
     await api.deals.resetDeals();
     await refetch();
     subscriptions.ping('table');

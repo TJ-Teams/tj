@@ -1,5 +1,5 @@
 import { Flex, FlexProps } from '@chakra-ui/react';
-import LoginButton from './LoginButton';
+import AuthButton from './AuthButton';
 import Logo from './Logo';
 import NavigationBar from './NavigationBar';
 
@@ -18,7 +18,7 @@ const Header = (props: FlexProps) => (
   >
     <Logo />
     <NavigationBar />
-    <LoginButton />
+    <AuthButton />
   </Flex>
 );
 

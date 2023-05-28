@@ -13,6 +13,7 @@ import theme from './theme';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
+import { AuthProvider } from './utils/AuthProvide';
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 
@@ -26,8 +27,10 @@ ReactDOM.createRoot(container).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ChakraBaseProvider theme={theme}>
-        <Routers />
-        <ReactQueryDevtools initialIsOpen={false} />
+        <AuthProvider>
+          <Routers />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </AuthProvider>
       </ChakraBaseProvider>
     </QueryClientProvider>
   </StrictMode>

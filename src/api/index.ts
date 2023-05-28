@@ -4,11 +4,13 @@ import {
   RecommendationsController,
 } from './RecommendationsController';
 import { StatisticsController } from './StatisticsController';
+import { UserController } from './UserController';
 
 type Api = {
   deals: DealsController;
   recommendations: RecommendationsController;
   statistics: StatisticsController;
+  user: UserController;
 };
 
 const api: Api = {
@@ -19,6 +21,7 @@ const api: Api = {
     ? new MockRecommendationsController()
     : new RecommendationsController(),
   statistics: new StatisticsController(),
+  user: new UserController(),
 };
 
 export default api;

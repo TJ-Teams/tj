@@ -1,5 +1,7 @@
-import axiosStatic, { AxiosError, AxiosResponse } from 'axios';
+import axiosStatic, { AxiosError, AxiosHeaders, AxiosResponse } from 'axios';
+import { AUTH_STORAGE_KEY } from '~/utils/AuthProvide';
 import isDev from '~/utils/is-dev';
+import safelyLocalStorage from '~/utils/safely-local-storage';
 
 const axios = axiosStatic.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
@@ -7,8 +9,10 @@ const axios = axiosStatic.create({
 
 axios.interceptors.request.use(
   async (config) => {
-    // TODO add auth token
-    // (config.headers as AxiosHeaders).set('Authorization', `Bearer TOKEN`);
+    const token = safelyLocalStorage.get(AUTH_STORAGE_KEY);
+    if (token) {
+      (config.headers as AxiosHeaders).set('Authorization', `Bearer ${token}`);
+    }
     return config;
   },
   (error) => Promise.reject(error)
@@ -23,7 +27,7 @@ export default abstract class BaseController {
     } catch (err) {
       const error = err as AxiosError;
       isDev && console.log(`GET ${url}`, error.response); // LOG
-      throw error.response;
+      throw error;
     }
   }
 
@@ -39,7 +43,7 @@ export default abstract class BaseController {
     } catch (err) {
       const error = err as AxiosError;
       isDev && console.log(`POST ${url}`, error.response); // LOG
-      throw error.response;
+      throw error;
     }
   }
 
@@ -51,7 +55,7 @@ export default abstract class BaseController {
     } catch (err) {
       const error = err as AxiosError;
       isDev && console.log(`PUT ${url}`, error.response); // LOG
-      throw error.response;
+      throw error;
     }
   }
 
@@ -63,7 +67,7 @@ export default abstract class BaseController {
     } catch (err) {
       const error = err as AxiosError;
       isDev && console.log(`DELETE ${url}`, error.response); // LOG
-      throw error.response;
+      throw error;
     }
   }
 }

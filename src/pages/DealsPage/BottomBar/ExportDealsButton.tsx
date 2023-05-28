@@ -6,10 +6,10 @@ import exportTjDeals from '~/utils/export-tj-deals';
 import { useDealsContext } from '../deals-context';
 
 const ExportDealsButton = () => {
-  const { isLoading, trackLoading } = useLoadingState(false);
+  const { isLoading, trackLoadingDiscard } = useLoadingState(false);
   const { parameters, deals } = useDealsContext();
 
-  const handleSubmit = trackLoading(async () => {
+  const handleSubmit = trackLoadingDiscard(async () => {
     const csvData = exportTjDeals(parameters.get, deals.get);
     downloadFile(
       csvData,
