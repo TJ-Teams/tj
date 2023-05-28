@@ -35,7 +35,7 @@ const parameters: Parameter[] = [
   { key: 'time', name: 'Время', type: 'string' },
   { key: 'amount', name: 'Количество', type: 'number' },
   { key: 'deal-type', name: 'Вид сделки', type: 'string' },
-  { key: 'total', name: 'Выручка', type: 'number' },
+  { key: 'profit', name: 'Выручка', type: 'number' },
   { key: 'price-currency', name: 'Валюта', type: 'string' },
 ];
 
