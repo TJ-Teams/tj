@@ -44,9 +44,7 @@ const FormSingleSelect = ({
   });
 
   const errorMessage =
-    !isDisabled && hasError
-      ? validateField(schema, field, data.get[field])
-      : '';
+    !isDisabled && hasError ? validateField(schema, field, data.get) : '';
 
   const handleChange = (option?: SelectOption) => {
     onDataChange({ [field]: option?.key || '' });

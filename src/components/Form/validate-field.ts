@@ -1,12 +1,12 @@
-import * as yup from "yup";
+import * as yup from 'yup';
 
 const validateField = (
   schema: yup.AnyObjectSchema,
   field: string,
-  value: unknown
+  data: Record<string, unknown>
 ) => {
   try {
-    schema.validateSyncAt(field, { [field]: value });
+    schema.validateSyncAt(field, data);
     return undefined;
   } catch (error) {
     return (error as yup.ValidationError)?.message;

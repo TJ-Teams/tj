@@ -1,15 +1,17 @@
-import { memo, useEffect, useState } from "react";
-import Input from "~/components/Input";
-import { useFieldFocus } from "~/hooks";
-import { InputProps } from "../Input";
-import { useFormContext } from "./FormLayout";
-import validateField from "./validate-field";
+import { memo, useState } from 'react';
+import Input from '~/components/Input';
+import { useFieldFocus } from '~/hooks';
+import { InputProps } from '../Input';
+import PasswordInput from '../PasswordInput';
+import { useFormContext } from './FormLayout';
+import validateField from './validate-field';
 
 type Props = {
   field: string;
   label?: string;
   isRequired?: boolean;
   isInitialFocus?: boolean;
+  isPassword?: boolean;
 } & InputProps;
 
 const FormInput = ({
@@ -17,6 +19,7 @@ const FormInput = ({
   field,
   isRequired,
   isInitialFocus,
+  isPassword,
   ...props
 }: Props) => {
   const { schema, data, dataErrors, onDataChange } =
@@ -30,20 +33,23 @@ const FormInput = ({
     deps: [dataErrors],
   });
 
-  const [value, setValue] = useState(data.get?.[field] || "");
+  const [value, setValue] = useState(data.get?.[field] || '');
 
-  useEffect(() => {
-    onDataChange({ [field]: value });
-  }, [value]);
+  const handleValueChange = (newValue: string) => {
+    onDataChange({ [field]: newValue });
+    setValue(newValue);
+  };
+
+  const Component = isPassword ? PasswordInput : Input;
 
   return (
-    <Input
+    <Component
       {...props}
       ref={ref}
       label={label}
       value={value}
-      onValueChange={setValue}
-      errorMessage={hasError ? validateField(schema, field, value) : ""}
+      onValueChange={handleValueChange}
+      errorMessage={hasError ? validateField(schema, field, data.get) : ''}
       formControlProps={{ isRequired, ...props.formControlProps }}
     />
   );

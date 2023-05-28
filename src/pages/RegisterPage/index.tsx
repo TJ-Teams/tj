@@ -18,6 +18,8 @@ const RegisterPage = () => (
       <Button
         w="full"
         p={4}
+        type="submit"
+        form="register-form"
         textTransform="uppercase"
         borderRadius={8}
         children="Зарегистрироваться"

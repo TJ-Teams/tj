@@ -1,11 +1,43 @@
-import { Stack, StackProps } from '@chakra-ui/react';
-import Input from '~/components/Input';
+import { StackProps } from '@chakra-ui/react';
+import * as yup from 'yup';
+import Form from '~/components/Form';
 
-const LoginForm = (props: StackProps) => (
-  <Stack as="form" spacing={3} {...props}>
-    <Input type="email" label="E-mail" autoComplete="on" />
-    <Input type="password" label="Пароль" autoComplete="on" />
-  </Stack>
+type Props = {
+  onSubmit?: (data: LoginFormData) => Promise<void>;
+} & Omit<StackProps, 'onSubmit'>;
+
+const LoginForm = ({ onSubmit, ...props }: Props) => (
+  <Form.Layout
+    id="login-form"
+    schema={loginFormSchema}
+    onSubmit={onSubmit}
+    spacing={3}
+    {...props}
+  >
+    <Form.Input
+      isRequired
+      isInitialFocus
+      label="E-mail"
+      autoComplete="on"
+      field="email"
+    />
+    <Form.Input
+      isRequired
+      isPassword
+      label="Пароль"
+      autoComplete="on"
+      field="password"
+    />
+  </Form.Layout>
 );
+
+const requiredLabel = 'Обязательное поле';
+
+const loginFormSchema = yup.object({
+  email: yup.string().required(requiredLabel).email('Некорректный e-mail'),
+  password: yup.string().required(requiredLabel),
+});
+
+type LoginFormData = yup.InferType<typeof loginFormSchema>;
 
 export default LoginForm;

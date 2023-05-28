@@ -1,7 +1,6 @@
-import { Button, Center, Divider, Flex } from '@chakra-ui/react';
+import { Button, Center, Flex } from '@chakra-ui/react';
 import AuthLinks from './AuthLinks';
 import LoginForm from './LoginForm';
-import ResetPasswordLink from './ResetPasswordLink';
 
 const LoginPage = () => (
   <Center flex={1}>
@@ -19,12 +18,15 @@ const LoginPage = () => (
       <Button
         w="full"
         p={4}
+        type="submit"
+        form="login-form"
         textTransform="uppercase"
         borderRadius={8}
         children="Войти"
       />
-      <Divider mt="28px" mb="10px" borderColor="#4F5D7C" />
-      <ResetPasswordLink />
+      {/* TODO some day :) */}
+      {/* <Divider mt="28px" mb="10px" borderColor="#4F5D7C" /> */}
+      {/* <ResetPasswordLink /> */}
     </Flex>
   </Center>
 );
