@@ -1,0 +1,3 @@
+[submodule "tj-api"]
+	path = tj-api
+	url = https://github.com/TJ-Teams/tj-api
