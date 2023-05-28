@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  tj:
+    container_name: TJ
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    build:
+      context: .
+    ports:
+      - 3500:4173
