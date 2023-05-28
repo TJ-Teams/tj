@@ -1,11 +1,20 @@
 version: '3.8'
 
 services:
-  tj:
-    container_name: TJ
+  client:
+    container_name: TJ-client
     environment:
       - VITE_API_URL=http://localhost:5000
     build:
       context: .
     ports:
       - 3500:4173
+
+  api:
+    container_name: TJ-api
+    environment:
+      - JWT_SECRET_KEY=very-secret-key
+    build:
+      context: tj-api
+    ports:
+      - 5000:5000
