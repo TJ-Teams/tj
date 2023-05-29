@@ -1,4 +1,4 @@
-import { HStack } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import { Fragment } from 'react';
 import InfoCard from './InfoCard';
 import WelcomeImage from './WelcomeImage';
@@ -6,20 +6,48 @@ import WelcomeImage from './WelcomeImage';
 const MainPage = () => (
   <Fragment>
     <WelcomeImage />
-    <HStack mt="44px" justify="center" spacing="98px">
+    <Stack
+      my="62px"
+      mx={{ base: '5vw', xl: '10vw' }}
+      justify="center"
+      spacing={{ base: '20px', xl: '48px' }}
+    >
       <InfoCard
-        imageSrc="/images/main-info-1.png"
-        text={'Обзор сделок со всех рынков'}
+        imageSrc="/images/preview-1.png"
+        title="Журнал сделок"
+        text={
+          <>
+            Занесите сделки в онлайн журнал или импортируйте таблицы от разных
+            брокеров, а затем настройте таблицу по своим пожеланиям: добавьте
+            новые параметры, переместите или удалите столбцы.
+          </>
+        }
       />
       <InfoCard
-        imageSrc="/images/main-info-2.png"
-        text={'Кастомизация статистики'}
+        imageSrc="/images/preview-2.png"
+        title="Визуализация"
+        text={
+          <>
+            Визуализируйте закрытые сделки с помощью удобных инструментов
+            построения диаграмм. Выберите интересующий вас параметр, укажите
+            период времени и визуализируйте выбранный параметр одним из типов
+            диаграмм (объем, доходность параметра или точность сделок по
+            параметру).
+          </>
+        }
       />
       <InfoCard
-        imageSrc="/images/main-info-3.png"
-        text={'Индивидуальные рекомендации на основе ваших стратегий'}
+        imageSrc="/images/preview-3.png"
+        title="Рекомендательная система"
+        text={
+          <>
+            Рекомендательная система поможет определить параметры, при которых
+            совершались ваши лучшие сделки и отследить параметры, при которых
+            совершались худшие сделки.
+          </>
+        }
       />
-    </HStack>
+    </Stack>
   </Fragment>
 );
 
