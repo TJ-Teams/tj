@@ -77,7 +77,14 @@ const ImportDealsWindow = ({ isOpen, onClose }: WindowProps) => {
       h="500px"
     >
       {type === undefined ? (
-        <HStack pb={20} h="full" justify="center" spacing={4}>
+        <Stack
+          pb={{ base: 0, md: 20 }}
+          h="full"
+          justify="center"
+          align="center"
+          spacing={4}
+          direction={{ base: 'column', md: 'row' }}
+        >
           {Object.values(providers).map((p, i) => (
             <ProviderButton
               key={i}
@@ -86,7 +93,7 @@ const ImportDealsWindow = ({ isOpen, onClose }: WindowProps) => {
               onClick={() => setType(p.type)}
             />
           ))}
-        </HStack>
+        </Stack>
       ) : !file ? (
         <Dropzone
           boxSize="full"
@@ -122,7 +129,7 @@ type ProviderButtonProps = {
 
 const ProviderButton = ({ imageSrc, name, onClick }: ProviderButtonProps) => (
   <Stack
-    p={4}
+    p={{ base: 1, md: 4 }}
     border="2px solid"
     borderRadius={8}
     borderColor="transparent"
@@ -133,7 +140,8 @@ const ProviderButton = ({ imageSrc, name, onClick }: ProviderButtonProps) => (
     onClick={onClick}
   >
     <Image
-      boxSize="150px"
+      mx="auto"
+      boxSize={{ base: '75px', md: '150px' }}
       objectFit="contain"
       pointerEvents="none"
       src={imageSrc}
@@ -142,6 +150,7 @@ const ProviderButton = ({ imageSrc, name, onClick }: ProviderButtonProps) => (
     <Button
       w="full"
       variant="clear"
+      fontSize={{ base: '12px', md: '16px' }}
       borderRadius={4}
       onClick={onClick}
       children={name}

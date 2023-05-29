@@ -113,7 +113,7 @@ const Window = ({
             py={{ base: '18px', md: '36px' }}
             display="flex"
             alignItems="center"
-            fontSize="24px"
+            fontSize={{ base: '14px', md: '24px' }}
             {...headerProps}
           >
             <Heading
