@@ -1,4 +1,4 @@
-import { HStack, LinkProps, Text } from '@chakra-ui/react';
+import { Grid, HStack, LinkProps, Text } from '@chakra-ui/react';
 import Link from '~/components/Link';
 import { useForceUpdate } from '~/hooks';
 import paths from '~/pages/paths';
@@ -11,7 +11,13 @@ const NavigationBar = () => {
   subscriptions.useSubscribe('change-auth', forceUpdate);
 
   return (
-    <HStack spacing="60px">
+    <Grid
+      gap={{ base: '15px', xl: '60px' }}
+      gridTemplateColumns={{
+        base: 'repeat(1, max-content)',
+        xl: 'repeat(4, max-content)',
+      }}
+    >
       <NavLink href={paths.main.makePath()} children="О нас" />
       <NavLink
         isDisabled={!isAuth.get}
@@ -28,7 +34,7 @@ const NavigationBar = () => {
         href={paths.recommendations.makePath()}
         children="Рекомендации"
       />
-    </HStack>
+    </Grid>
   );
 };
 
@@ -42,7 +48,7 @@ const NavLink = ({ isDisabled, children, ...props }: NavLinkProps) => {
       <Text
         color="black"
         fontWeight="600"
-        fontSize="18px"
+        fontSize={{ base: '14px', md: '18px' }}
         cursor="default"
         opacity={0.6}
         children={children}
@@ -55,7 +61,7 @@ const NavLink = ({ isDisabled, children, ...props }: NavLinkProps) => {
       {...props}
       color="black"
       fontWeight="600"
-      fontSize="18px"
+      fontSize={{ base: '14px', md: '18px' }}
       borderRadius={2}
       children={children}
     />

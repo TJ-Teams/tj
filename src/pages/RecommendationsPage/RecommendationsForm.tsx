@@ -3,8 +3,8 @@ import {
   ButtonProps,
   Flex,
   FlexProps,
-  HStack,
   Spacer,
+  Stack,
   Text,
   Wrap,
 } from '@chakra-ui/react';
@@ -85,7 +85,7 @@ const RecommendationsForm = ({
             />
           ))}
       </Wrap>
-      <HStack>
+      <Stack direction={{ base: 'column', md: 'row' }}>
         <SelectDataRange
           defaultStartDate={defaultStartDate}
           defaultEndDate={defaultEndDate}
@@ -97,9 +97,10 @@ const RecommendationsForm = ({
             !isValidDateRange || parameterKeys.size === 0 || isLoading
           }
           onClick={handleSubmit}
+          w={{ base: 'full', md: 'fit-content' }}
           children="Получить рекомендации"
         />
-      </HStack>
+      </Stack>
     </Flex>
   );
 };

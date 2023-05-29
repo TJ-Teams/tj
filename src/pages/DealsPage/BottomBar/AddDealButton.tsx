@@ -33,6 +33,7 @@ const AddDealButton = ({ onAdd }: Props) => {
         userSelect="none"
         noOfLines={1}
         children="Добавить сделку"
+        display={{ base: 'none', lg: 'initial' }}
       />
     </HStack>
   );

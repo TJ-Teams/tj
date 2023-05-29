@@ -25,10 +25,11 @@ const ChartsGrid = () => {
 
   return (
     <Grid
-      m={8}
-      mt={20}
+      mx={{ base: 4, md: 8 }}
+      mb={{ base: 4, md: 8 }}
+      mt={{ base: 28, sm: 20 }}
       gridAutoRows="500px"
-      gridTemplateColumns="1fr 1fr"
+      gridTemplateColumns={{ base: '1fr', lg: '1fr 1fr' }}
       gridGap="20px"
     >
       {charts.get.map((c) => {

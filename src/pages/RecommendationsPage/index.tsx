@@ -1,4 +1,4 @@
-import { Flex, HStack } from '@chakra-ui/react';
+import { Flex, Stack } from '@chakra-ui/react';
 import { QueryFunction, useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -47,7 +47,7 @@ const RecommendationsPage = () => {
     <RecommendationsProvider>
       <Flex
         flex={1}
-        py="36px"
+        py={{ base: '14px', md: '36px' }}
         align="center"
         flexDir="column"
         whiteSpace="break-spaces"
@@ -61,7 +61,13 @@ const RecommendationsPage = () => {
           onSubmit={handleSubmit}
         />
         {hasData && (
-          <HStack mt="36px" w="80vw" spacing="70px" align="flex-start">
+          <Stack
+            mt="36px"
+            w={{ base: '95vw', xl: '80vw' }}
+            spacing={{ base: '16px', md: '32px', xl: '70px' }}
+            align="flex-start"
+            direction={{ base: 'column', lg: 'row' }}
+          >
             <RatingTable
               title="Лучшие стратегии"
               colors={topColors}
@@ -82,9 +88,15 @@ const RecommendationsPage = () => {
                 })
               )}
             />
-          </HStack>
+          </Stack>
         )}
-        {hasData && <RecommendationsTable mt="70px" w="75vw" data={data} />}
+        {hasData && (
+          <RecommendationsTable
+            mt={{ base: '16px', md: '32px', xl: '70px' }}
+            w={{ base: '95vw', xl: '75vw' }}
+            data={data}
+          />
+        )}
         {isInitialLoading && <PageLoader />}
       </Flex>
     </RecommendationsProvider>

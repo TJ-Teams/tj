@@ -6,6 +6,7 @@ const Logo = () => (
     w="100px"
     href="/"
     borderRadius={8}
+    display={{ base: 'none', md: 'block' }}
     _hover={{ opacity: 0.8 }}
     _active={{ opacity: 0.9 }}
     children={<Image pointerEvents="none" src="/images/logo.svg" alt="logo" />}

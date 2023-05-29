@@ -102,14 +102,15 @@ const Window = ({
             _active={{ bg: 'neutral.3' }}
             _focus={{ boxShadow: 'none' }}
             _focusVisible={{ boxShadow: 'outline' }}
+            display={{ base: 'none', sm: 'block' }}
             children={<CrossIcon boxSize={4} />}
           />
         )}
 
         {heading && (
           <ModalHeader
-            px="50px"
-            py="36px"
+            px={{ base: '20px', md: '50px' }}
+            py={{ base: '18px', md: '36px' }}
             display="flex"
             alignItems="center"
             fontSize="24px"
@@ -126,7 +127,7 @@ const Window = ({
         )}
 
         <ModalBody
-          px="50px"
+          px={{ base: '20px', md: '50px' }}
           pt={heading ? 1 : '36px'}
           pb={!isHideSubmit || !isHideCancel ? 1 : '36px'}
           overflowX="hidden"
@@ -135,7 +136,11 @@ const Window = ({
         />
 
         {(!isHideSubmit || !isHideCancel) && (
-          <ModalFooter px="50px" py="36px" {...footerProps}>
+          <ModalFooter
+            px={{ base: '20px', md: '50px' }}
+            py={{ base: '18px', md: '36px' }}
+            {...footerProps}
+          >
             {!isHideCancel && (
               <Button
                 variant="outline"

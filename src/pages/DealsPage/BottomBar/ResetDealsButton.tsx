@@ -40,6 +40,7 @@ const ResetDealsButton = () => {
         userSelect="none"
         noOfLines={1}
         children="Очистить"
+        display={{ base: 'none', lg: 'initial' }}
       />
       <Alert
         heading="Очистить журнал сделок"

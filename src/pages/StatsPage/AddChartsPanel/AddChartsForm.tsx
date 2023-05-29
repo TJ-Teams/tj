@@ -7,6 +7,7 @@ import {
   Grid,
   HStack,
   Spacer,
+  Stack,
   Text,
 } from '@chakra-ui/react';
 import { ChangeEvent, Fragment, useState } from 'react';
@@ -67,7 +68,7 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
 
   return (
     <Box {...props}>
-      <HStack>
+      <Stack direction={{ base: 'column', md: 'row' }}>
         <SelectDataRange onChange={handleDateRangeChange} />
         <Spacer />
         <Button
@@ -75,13 +76,14 @@ const AddChartsForm = ({ onSubmit, ...props }: Props) => {
           onClick={handleSubmit}
           children="Построить график"
         />
-      </HStack>
+      </Stack>
       <Grid
         mt={6}
-        gridGap={6}
+        gridGap={{ base: 4, md: 6 }}
         gridTemplateColumns="1.75fr repeat(3, 1fr)"
         gridAutoRows="24px"
         alignItems="center"
+        fontSize={{ base: '12px', md: '16px' }}
       >
         <Spacer />
         {Object.values(chartLabels).map(({ label }, i) => (
@@ -117,6 +119,7 @@ const Button = (props: ButtonProps) => (
     fontSize="16px"
     fontWeight="bold"
     borderRadius={8}
+    w={{ base: 'full', sm: 'fit-content' }}
     _hover={{ opacity: 0.8 }}
     _active={{ opacity: 0.9 }}
     {...props}

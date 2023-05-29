@@ -50,12 +50,16 @@ const ChartLayout = ({
     >
       <HStack mr={4} mb={2} justify="space-between">
         <Text
-          fontSize="16px"
+          fontSize={{ base: '12px', sm: '16px' }}
           fontWeight="600"
           whiteSpace="pre-line"
           children={subTitle}
         />
-        <Heading fontSize="20px" textAlign="right" children={title} />
+        <Heading
+          fontSize={{ base: '14px', sm: '16px' }}
+          textAlign="right"
+          children={title}
+        />
       </HStack>
 
       {onRemove && (
@@ -74,7 +78,7 @@ const ChartLayout = ({
       )}
       {isLoading ? (
         <Center boxSize="full" flexDir="column">
-          <PuffLoader color='#852AD3' />
+          <PuffLoader color="#852AD3" />
           <Text mt={4} children="Загрузка..." />
         </Center>
       ) : isEmpty ? (

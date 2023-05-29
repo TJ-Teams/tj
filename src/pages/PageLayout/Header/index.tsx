@@ -6,7 +6,7 @@ import NavigationBar from './NavigationBar';
 const Header = (props: FlexProps) => (
   <Flex
     {...props}
-    px={10}
+    px={{ base: 8, xl: 10 }}
     w="full"
     pos="fixed"
     top={0}

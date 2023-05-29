@@ -23,6 +23,7 @@ const SaveIndicator = () => {
         fontWeight={500}
         noOfLines={1}
         children={data.message}
+        display={{ base: 'none', sm: 'initial' }}
       />
     </HStack>
   );

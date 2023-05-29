@@ -19,12 +19,18 @@ const RatingTable = ({ title, data, colors }: Props) => {
   return (
     <Box
       flex={1}
-      pt="18px"
-      pb="24px"
+      w={{ base: 'full', lg: 'fit-content' }}
+      pt={{ base: '12px', md: '18px' }}
+      pb={{ base: '16px', md: '24px' }}
       border="4px solid #E3E5E7"
       borderRadius={6}
     >
-      <Heading as="h3" fontSize="32px" textAlign="center" children={title} />
+      <Heading
+        as="h3"
+        fontSize={{ base: '20px', md: '32px' }}
+        textAlign="center"
+        children={title}
+      />
       {!isEmpty && <BaseRow mt="18px" name="Параметры" value="Точность" />}
       {data.slice(0, colors.length).map((d, i) => (
         <Row
@@ -54,7 +60,11 @@ type BaseRowProps = {
 } & StackProps;
 
 const BaseRow = ({ name, value, ...props }: BaseRowProps) => (
-  <HStack px="72px" fontSize="22px" {...props}>
+  <HStack
+    px={{ base: '36px', md: '72px' }}
+    fontSize={{ base: '16px', md: '22px' }}
+    {...props}
+  >
     <Text color="inherit" children={name} />
     <Spacer minW="2.5vw" />
     <Text color="inherit" children={value} />
@@ -68,7 +78,7 @@ type RowProps = {
 
 const Row = ({ name, value, ...props }: RowProps) => (
   <BaseRow
-    fontSize="18px"
+    fontSize={{ base: '14px', md: '18px' }}
     fontWeight="500"
     name={name}
     value={`${+value.toFixed(1)}%`}

@@ -29,11 +29,11 @@ const AuthButton = () => {
 
     return (
       <Button
-        px={8}
+        px={{ base: 4, md: 8 }}
         h="46px"
         fontWeight="800"
-        fontSize="18px"
-        borderRadius={20}
+        fontSize={{ base: '14px', md: '18px' }}
+        borderRadius={{ base: 12, md: 20 }}
         children="Выйти"
         isLoading={isLoading}
         onClick={onLogout}
@@ -43,13 +43,13 @@ const AuthButton = () => {
 
   return (
     <Button
-      px={8}
+      px={{ base: 4, md: 8 }}
       h="46px"
       as={Link}
       to={paths.login.makePath()}
       fontWeight="800"
-      fontSize="18px"
-      borderRadius={20}
+      fontSize={{ base: '14px', md: '18px' }}
+      borderRadius={{ base: 12, md: 20 }}
       children="Войти"
     />
   );

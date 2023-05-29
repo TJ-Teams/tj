@@ -5,7 +5,7 @@ import paths from '~/pages/paths';
 const AuthLinks = () => (
   <HStack spacing="36px">
     <Link
-      fontSize="24px"
+      fontSize={{ base: '16px', md: '24px' }}
       fontWeight="600"
       textTransform="uppercase"
       borderRadius={4}
@@ -13,7 +13,7 @@ const AuthLinks = () => (
       children="Вход"
     />
     <Link
-      fontSize="24px"
+      fontSize={{ base: '16px', md: '24px' }}
       fontWeight="600"
       textTransform="uppercase"
       borderRadius={4}

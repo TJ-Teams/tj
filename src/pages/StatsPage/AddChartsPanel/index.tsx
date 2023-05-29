@@ -5,6 +5,7 @@ import {
   Collapse,
   HStack,
   Icon,
+  Stack,
   useBoolean,
 } from '@chakra-ui/react';
 import { FiChevronDown } from 'react-icons/fi';
@@ -32,7 +33,7 @@ const AddChartsMenu = () => {
       bg="white"
       px={5}
       py={4}
-      w="650px"
+      w={{ base: '100vw', sm: '650px' }}
       boxShadow="base"
       borderBottomRightRadius={8}
     >
@@ -41,7 +42,7 @@ const AddChartsMenu = () => {
         unmountOnExit
         children={<AddChartsForm mb={6} onSubmit={handleSubmit} />}
       />
-      <HStack spacing={4}>
+      <Stack spacing={4} direction={{ base: 'column', sm: 'row' }}>
         <Button
           flex={1}
           justifyContent="flex-start"
@@ -56,7 +57,7 @@ const AddChartsMenu = () => {
           }
         />
         <SettingParametersButton />
-      </HStack>
+      </Stack>
     </Box>
   );
 };

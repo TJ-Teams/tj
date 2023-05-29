@@ -28,6 +28,7 @@ const ImportDealsButton = () => {
         userSelect="none"
         noOfLines={1}
         children="Импортировать"
+        display={{ base: 'none', lg: 'initial' }}
       />
       <ImportDealsWindow isOpen={isOpen} onClose={setIsOpen.off} />
     </HStack>

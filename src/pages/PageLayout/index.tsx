@@ -9,9 +9,9 @@ type Props = {
 
 const PageLayout = ({ children }: Props) => (
   <Flex key="layout" as="main" minH="100vh" flexDir="column">
-    <Header h="74px" />
+    <Header h={{ base: '165px', md: '180px', xl: '74px' }} />
     <Flex
-      mt="74px"
+      mt={{ base: '165px', md: '180px', xl: '74px' }}
       pos="relative"
       flex={1}
       flexDir="column"

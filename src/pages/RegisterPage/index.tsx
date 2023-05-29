@@ -31,16 +31,20 @@ const RegisterPage = () => {
   return (
     <Center flex={1}>
       <Flex
-        px="72px"
-        py="62px"
-        mt={4}
+        m={8}
+        px={{ base: '36px', md: '72px' }}
+        py={{ base: '32px', md: '62px' }}
         w="540px"
         flexDir="column"
         borderRadius={30}
         boxShadow="0px 4px 17px rgba(0, 0, 0, 0.17)"
       >
         <AuthLinks />
-        <RegisterForm mt="44px" mb="50px" onSubmit={onRegister} />
+        <RegisterForm
+          mt={{ base: '22px', md: '44px' }}
+          mb={{ base: '25px', md: '50px' }}
+          onSubmit={onRegister}
+        />
         <Button
           w="full"
           p={4}

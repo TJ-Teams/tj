@@ -42,6 +42,7 @@ const ExportDealsButton = () => {
         userSelect="none"
         noOfLines={1}
         children="Экспортировать"
+        display={{ base: 'none', lg: 'initial' }}
       />
     </HStack>
   );

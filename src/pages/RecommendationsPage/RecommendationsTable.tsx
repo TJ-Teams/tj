@@ -1,6 +1,4 @@
 import {
-  Box,
-  BoxProps,
   Center,
   FlexProps,
   Grid,
@@ -35,9 +33,9 @@ const RecommendationsTable = ({ data, ...props }: Props) => {
   const totalColumns = Object.keys(columns).length;
 
   return (
-    <Stack spacing="20px" {...props}>
+    <Stack spacing={{ base: '12px', md: '20px' }} {...props}>
       <Heading
-        fontSize="32px"
+        fontSize={{ base: '18px', md: '32px' }}
         textAlign="center"
         children="Оценка всех торговых стратегий"
       />
@@ -46,7 +44,7 @@ const RecommendationsTable = ({ data, ...props }: Props) => {
           gridTemplateColumns={`repeat(${totalColumns - 2}, 1fr) 1.5fr 1.5fr`}
           border="1px solid #B9B9B9"
           borderRadius={8}
-          overflow="hidden"
+          overflow="auto"
         >
           {Object.values(columns).map((name, i) => (
             <Cell
@@ -86,7 +84,14 @@ const RecommendationsTable = ({ data, ...props }: Props) => {
 };
 
 const Cell = (props: FlexProps) => (
-  <Center px="12px" py="9.5px" minH="50px" textAlign="center" {...props} />
+  <Center
+    px={{ base: '8px', md: '12px' }}
+    py={{ base: '4px', md: '9.5px' }}
+    minH="50px"
+    fontSize={{ base: '14px', md: '16px' }}
+    textAlign="center"
+    {...props}
+  />
 );
 
 export default RecommendationsTable;
