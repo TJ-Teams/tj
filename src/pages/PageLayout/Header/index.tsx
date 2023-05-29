@@ -8,7 +8,7 @@ const Header = (props: FlexProps) => (
     {...props}
     px={{ base: 8, xl: 10 }}
     w="full"
-    pos="fixed"
+    pos={{ base: 'static', xl: 'fixed' }}
     top={0}
     bg="white"
     borderBottom="2px solid rgba(160, 173, 198, 0.5)"

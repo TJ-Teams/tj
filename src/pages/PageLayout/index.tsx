@@ -11,7 +11,7 @@ const PageLayout = ({ children }: Props) => (
   <Flex key="layout" as="main" minH="100vh" flexDir="column">
     <Header h={{ base: '165px', md: '180px', xl: '74px' }} />
     <Flex
-      mt={{ base: '165px', md: '180px', xl: '74px' }}
+      mt={{ base: 0, xl: '74px' }}
       pos="relative"
       flex={1}
       flexDir="column"

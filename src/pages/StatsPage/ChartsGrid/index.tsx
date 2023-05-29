@@ -27,7 +27,7 @@ const ChartsGrid = () => {
     <Grid
       mx={{ base: 4, md: 8 }}
       mb={{ base: 4, md: 8 }}
-      mt={{ base: 28, sm: 20 }}
+      mt={{ base: 4, xl: 20 }}
       gridAutoRows="500px"
       gridTemplateColumns={{ base: '1fr', lg: '1fr 1fr' }}
       gridGap="20px"

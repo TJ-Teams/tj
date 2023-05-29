@@ -28,7 +28,7 @@ const AddChartsMenu = () => {
 
   return (
     <Box
-      position="fixed"
+      position={{ base: 'static', xl: 'fixed' }}
       zIndex="banner"
       bg="white"
       px={5}
