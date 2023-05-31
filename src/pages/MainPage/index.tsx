@@ -1,6 +1,7 @@
 import { Stack } from '@chakra-ui/react';
 import { Fragment } from 'react';
-import InfoCard from './InfoCard';
+import paths from '../paths';
+import InfoCardWithLink from './InfoCardWithLink';
 import WelcomeImage from './WelcomeImage';
 
 const MainPage = () => (
@@ -12,7 +13,8 @@ const MainPage = () => (
       justify="center"
       spacing={{ base: '20px', xl: '48px' }}
     >
-      <InfoCard
+      <InfoCardWithLink
+        href={paths.deals.makePath()}
         imageSrc="/images/preview-1.png"
         title="Журнал сделок"
         text={
@@ -23,7 +25,8 @@ const MainPage = () => (
           </>
         }
       />
-      <InfoCard
+      <InfoCardWithLink
+        href={paths.stats.makePath()}
         imageSrc="/images/preview-2.png"
         title="Визуализация"
         text={
@@ -36,7 +39,8 @@ const MainPage = () => (
           </>
         }
       />
-      <InfoCard
+      <InfoCardWithLink
+        href={paths.recommendations.makePath()}
         imageSrc="/images/preview-3.png"
         title="Рекомендательная система"
         text={
