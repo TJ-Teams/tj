@@ -1,17 +1,17 @@
-import { Box } from '@chakra-ui/react';
+import { Box, ListItem, Stack, Text, UnorderedList } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { memo } from 'react';
 import {
   Cell,
   Legend,
+  LegendProps,
   Pie,
   PieChart as RPieChart,
   PieLabel,
   PieLabelRenderProps,
   Tooltip,
+  TooltipProps,
 } from 'recharts';
-import { ContentType } from 'recharts/types/component/DefaultLegendContent';
-import { useLoadingState, useMethodAfterMount, useValue } from '~/hooks';
 import ChartLayout, { ChartLayoutProps } from './ChartLayout';
 import { ChartData } from './types';
 
@@ -45,7 +45,7 @@ const PieChart = ({ chartKey, title, subTitle, loadData, onRemove }: Props) => {
             <Cell key={index} fill={item.color} />
           ))}
         />
-        <Tooltip separator="" formatter={() => ''} />
+        <Tooltip isAnimationActive={false} content={tooltipContent} />
         <Legend
           iconType="circle"
           layout="vertical"
@@ -95,17 +95,62 @@ const renderCustomizedLabel: PieLabel<PieLabelRenderProps> = ({
   );
 };
 
-const renderLegend: ContentType = ({ payload }) => {
+const renderLegend: LegendProps['content'] = ({ payload }) => {
   return (
-    <Box pl={6} pr={2} maxW="200px" h="375px" overflowY="auto">
-      <ul>
+    <Box
+      pr={2}
+      maxW="200px"
+      h="400px"
+      overflowY="auto"
+      css={{
+        '&::-webkit-scrollbar': {
+          width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: 'white',
+          borderRadius: '2px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: '#D3D3D3',
+          borderRadius: '2px',
+        },
+      }}
+    >
+      <UnorderedList pl={2}>
         {payload?.map((entry, i) => (
-          <li key={i} style={{ color: entry.color }}>
+          <ListItem key={i} color={entry.color} fontWeight="semibold">
             {entry.value}
-          </li>
+          </ListItem>
         ))}
-      </ul>
+      </UnorderedList>
     </Box>
+  );
+};
+
+const tooltipContent: TooltipProps<number, string>['content'] = (props) => {
+  const item = props.payload?.at(0);
+  const label = item?.name;
+  const count = item?.payload?.count;
+
+  if (!label) {
+    return null;
+  }
+
+  return (
+    <Stack
+      px={3}
+      py={3}
+      spacing={1}
+      bg="white"
+      border="1px solid"
+      borderColor="neutral.3"
+      boxShadow="base"
+      borderRadius={4}
+      fontSize="14px"
+    >
+      <Text fontWeight="semibold" children={label} />
+      <Text children={`Cделок: ${count || 0}`} />
+    </Stack>
   );
 };
 

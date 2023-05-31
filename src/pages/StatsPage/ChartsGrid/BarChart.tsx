@@ -1,3 +1,4 @@
+import { Stack, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { memo } from 'react';
 import {
@@ -8,6 +9,7 @@ import {
   LabelList,
   ReferenceLine,
   Tooltip,
+  TooltipProps,
   XAxis,
   YAxis,
 } from 'recharts';
@@ -17,6 +19,7 @@ import { ChartData } from './types';
 type Props = {
   chartKey: string;
   loadData: () => Promise<ChartData[]>;
+  valueLabel: string;
   domain?: [number, number];
 } & ChartLayoutProps;
 
@@ -24,6 +27,7 @@ const BarChart = ({
   chartKey,
   title,
   subTitle,
+  valueLabel,
   domain,
   loadData,
   onRemove,
@@ -58,7 +62,10 @@ const BarChart = ({
             domain || [(min: number) => (min < 0 ? min * 1.1 : min), 'auto']
           }
         />
-        <Tooltip formatter={(value) => +(+value).toFixed(1)} />
+        <Tooltip
+          isAnimationActive={false}
+          content={tooltipContent(valueLabel)}
+        />
         <ReferenceLine y={0} stroke="rgb(102, 102, 102)" />
         <Bar dataKey="value">
           <LabelList
@@ -80,5 +87,38 @@ const tickFormatter = (num: number) => {
     ? +(Math.sign(num) * (Math.abs(num) / 1000)).toFixed(1) + 'k'
     : (+(Math.sign(num) * Math.abs(num)).toFixed(1)).toString();
 };
+
+const tooltipContent =
+  (valueLabel: string): TooltipProps<number, string>['content'] =>
+  (props) => {
+    const item = props.payload?.at(0);
+    const label = props.label;
+    const value = item?.value;
+    const count = item?.payload?.count;
+
+    if (!label || value === undefined) {
+      return null;
+    }
+
+    const normalizedValue = +(+value).toFixed(1);
+
+    return (
+      <Stack
+        px={3}
+        py={3}
+        spacing={1}
+        bg="white"
+        border="1px solid"
+        borderColor="neutral.3"
+        boxShadow="base"
+        borderRadius={4}
+        fontSize="14px"
+      >
+        <Text fontWeight="semibold" children={label} />
+        <Text children={`${valueLabel}: ${normalizedValue}`} />
+        <Text children={`Сделок: ${count || 0}`} />
+      </Stack>
+    );
+  };
 
 export default memo(BarChart, (prev, next) => prev.chartKey === next.chartKey);

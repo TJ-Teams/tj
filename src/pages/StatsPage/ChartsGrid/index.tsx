@@ -47,6 +47,7 @@ const ChartsGrid = () => {
             const chartData = stats[c.parameterKey]?.map((v) => ({
               name: v.name,
               value: v[c.type],
+              count: v.volume,
               color: stc(v.name),
             }));
             return chartData || [];
@@ -60,6 +61,7 @@ const ChartsGrid = () => {
             chartKey={chartKey}
             title={title}
             subTitle={getChartSubtitle(c)}
+            valueLabel={info.valueLabel}
             loadData={loadData}
             onRemove={handleChartRemove(chartKey)}
             domain={'domain' in info ? info.domain : undefined}
@@ -81,13 +83,16 @@ const getChartSubtitle = ({ type, startDate, endDate }: Chart): string => {
 const chartInfo = {
   volume: {
     Chart: PieChart,
+    valueLabel: 'Объем',
   },
   accuracy: {
     Chart: BarChart,
+    valueLabel: 'Точность',
     domain: [0, 100] as [number, number],
   },
   profitability: {
     Chart: BarChart,
+    valueLabel: 'Доход',
   },
 } as const;
 
