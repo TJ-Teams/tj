@@ -7,7 +7,10 @@ import { isDefined } from './is-defined';
 const headerLine = 'Сделки,Header';
 const bodyLine = 'Сделки,Data';
 
-const splitColumns: Record<string, (value: string) => [string, string][]> = {
+const modifyColumns: Record<
+  string,
+  (value: string, ctx: Record<string, string>) => [string, string][]
+> = {
   Символ: (value: string) => {
     const [name] = value.split(' ');
     return [['Название компании', name]];
@@ -26,6 +29,20 @@ const splitColumns: Record<string, (value: string) => [string, string][]> = {
       ['Дата', date?.trim()],
       ['Время', time?.trim()],
     ];
+  },
+  Выручка: (value: string, ctx: Record<string, string>) => {
+    let profit = parseInt(value);
+    if (ctx['Валюта'] === 'USD') {
+      profit *= 80;
+    }
+    return [['Выручка', profit.toString()]];
+  },
+  Валюта: (value: string) => {
+    let currency = value;
+    if (value === 'USD') {
+      currency = 'RUB';
+    }
+    return [['Валюта', currency]];
   },
 };
 
@@ -116,7 +133,7 @@ const importInteractiveDeals = async (
   const extendedResult = result.map((r) => {
     return Object.fromEntries(
       Object.entries(r).flatMap(
-        ([name, value]) => splitColumns[name]?.(value) || [[name, value]]
+        ([name, value]) => modifyColumns[name]?.(value, r) || [[name, value]]
       )
     ) as Record<string, string>;
   });
