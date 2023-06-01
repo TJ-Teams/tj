@@ -142,7 +142,12 @@ const importInteractiveDeals = async (
     throw new Error('No deals in file');
   }
 
-  const deals = extendedResult.map(toDeal);
+  const deals = extendedResult.map(toDeal).sort((a, b) => {
+    return (
+      (b?.date ? new Date(b.date).getTime() : 0) -
+      (a?.date ? new Date(a.date).getTime() : 0)
+    );
+  });
 
   return [parameters, deals];
 };

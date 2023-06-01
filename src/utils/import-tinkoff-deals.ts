@@ -114,7 +114,12 @@ const importTinkoffDeals = async (
     throw new Error('No deals in file');
   }
 
-  const deals = result.map(toDeal);
+  const deals = result.map(toDeal).sort((a, b) => {
+    return (
+      (b?.date ? new Date(b.date).getTime() : 0) -
+      (a?.date ? new Date(a.date).getTime() : 0)
+    );
+  });
 
   return [parameters, deals];
 };

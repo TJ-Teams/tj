@@ -12,6 +12,15 @@ export class DealsController extends BaseController {
       data.parameters.length > 0 ? data.parameters : this.defaultParameters;
     const deals = Object.values(data.deals);
 
+    if (deals.some((d) => d.date)) {
+      const sortedDeals = deals.sort(
+        (a, b) =>
+          (b?.date ? new Date(b.date).getTime() : 0) -
+          (a?.date ? new Date(a.date).getTime() : 0)
+      );
+      return { parameters, deals: sortedDeals };
+    }
+
     return { parameters, deals };
   }
 
