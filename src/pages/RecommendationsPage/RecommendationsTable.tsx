@@ -52,7 +52,7 @@ const RecommendationsTable = ({ data, ...props }: Props) => {
               bg="#F3E4FF"
               fontWeight="600"
               borderLeft={i === 0 ? 'none' : '1px solid #B9B9B9'}
-              borderLeftWidth={i === totalColumns - 2 ? '5px' : '1px'}
+              borderLeftWidth="1px"
               children={name}
             />
           ))}
@@ -64,7 +64,7 @@ const RecommendationsTable = ({ data, ...props }: Props) => {
                   <Cell
                     key={j}
                     borderLeft={j === 0 ? 'none' : '1px solid #B9B9B9'}
-                    borderLeftWidth={j === totalColumns - 2 ? '5px' : '1px'}
+                    borderLeftWidth="1px"
                     bg={i % 2 === 1 ? 'neutral.2' : 'neutral.1'}
                     children={
                       typeof value === 'number'
