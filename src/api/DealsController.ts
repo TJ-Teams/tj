@@ -36,9 +36,10 @@ export class DealsController extends BaseController {
 
   protected readonly defaultParameters: Parameter[] = [
     { key: 'name', name: 'Название компании', type: 'string' },
+    { key: 'total', name: 'Сумма сделки', type: 'number' },
+    { key: 'amount', name: 'Объем позиции', type: 'number' },
     { key: 'date', name: 'Дата операции', type: 'date' },
     { key: 'strategy', name: 'Стратегия', type: 'string' },
-    { key: 'amount', name: 'Объем позиции', type: 'number' },
     { key: 'mart', name: 'Рынок', type: 'string' },
   ];
 }
