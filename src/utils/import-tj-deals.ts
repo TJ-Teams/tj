@@ -71,8 +71,11 @@ const importTjDeals = async (file: File): Promise<[Parameter[], Deal[]]> => {
   }
 
   const deals = result.map(toDeal(parameters));
+  const paramsWithoutProvider = parameters.filter(
+    (p) => p.key !== 'provider-type'
+  );
 
-  return [parameters, deals];
+  return [paramsWithoutProvider, deals];
 };
 
 export default importTjDeals;
